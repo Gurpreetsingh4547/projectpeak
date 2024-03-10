@@ -24,13 +24,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import CheckboxWithLabel from "../common/Checkbox";
 import LOGO from "../../assets/logo.png";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
 // Form Schema
 const formSchema = z.object({
+  first_name: z.string().min(2, {
+    message: "First name must be at least 2 characters.",
+  }),
+  last_name: z.string().min(2, {
+    message: "Last name must be at least 2 characters.",
+  }),
   email: z.string().email(),
   password: z
     .string()
@@ -46,14 +51,16 @@ const formSchema = z.object({
 });
 
 /**
- * Login Form Component.
+ * Sign up component.
  */
-const LoginForm = () => {
+const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      first_name: "",
+      last_name: "",
       email: "",
       password: "",
     },
@@ -77,8 +84,8 @@ const LoginForm = () => {
             <img src={LOGO} alt="Project Peak" className="w-24 object-cover" />
           </div>
           <CardHeader>
-            <CardTitle className="uppercase">Login</CardTitle>
-            <CardDescription>Welcome Back to Project Peak.</CardDescription>
+            <CardTitle className="uppercase">Sign Up</CardTitle>
+            <CardDescription>Sign up and Explore Project Peak.</CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -86,6 +93,36 @@ const LoginForm = () => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-8"
               >
+                <div className="flex flex-row justify-between">
+                  <FormField
+                    control={form.control}
+                    name="first_name"
+                    render={({ field }) => (
+                      <FormItem className="w-30 mr-5">
+                        <FormLabel>First Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter First Name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="last_name"
+                    render={({ field }) => (
+                      <FormItem className="w-30">
+                        <FormLabel>Last Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter Last Name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 <FormField
                   control={form.control}
                   name="email"
@@ -129,12 +166,6 @@ const LoginForm = () => {
                 />
               </form>
             </Form>
-            <div className="flex justify-between space-x-2 mt-5">
-              <CheckboxWithLabel label="Remember me" value={true} />
-              <a href="" className="text-sm">
-                Forget Password?
-              </a>
-            </div>
           </CardContent>
           <CardFooter>
             <Button
@@ -142,13 +173,13 @@ const LoginForm = () => {
               type="submit"
               onClick={form.handleSubmit(onSubmit)}
             >
-              Login
+              Sign up
             </Button>
           </CardFooter>
           <div className="pl-5 space-x-2 mb-5">
-            <span>Don't have an account?</span>
-            <Link to="/signup" className="text-sm  text-blue-600">
-              Sign up
+            <span>Already have an account?</span>
+            <Link to="/login" className="text-sm  text-blue-600">
+              Login
             </Link>
           </div>
         </Card>
@@ -157,4 +188,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default Signup;

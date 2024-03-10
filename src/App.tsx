@@ -1,16 +1,9 @@
 // Components
-import LoginForm from "./components/Login/LoginForm";
+import { ProtectRouter } from "./components/Router";
 
 /**
  * Main component of the App
  */
-const App = () => {
-  return (
-    <>
-      {/* Login Form */}
-      <LoginForm />
-    </>
-  );
-};
+const App = () => <ProtectRouter />;
 
 export default App;
