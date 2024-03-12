@@ -1,9 +1,12 @@
+import { useState } from "react";
+
 // Packages
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "sonner";
 
 // Components
 import { Button } from "@/components/ui/button";
@@ -25,8 +28,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import LOGO from "../../assets/logo.png";
-import { useState } from "react";
 import { Link } from "react-router-dom";
+
+// Services
+import { SignupUser } from "@/model/LoginSignup";
+import DotLoader from "../common/Loader";
 
 // Form Schema
 const formSchema = z.object({
@@ -55,7 +61,8 @@ const formSchema = z.object({
  */
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
-  // 1. Define your form.
+  const [isRequesting, setIsRequesting] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,10 +77,27 @@ const Signup = () => {
    * Handle form submission.
    * @param values - The form values.
    */
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const payload = {
+      ...values,
+      full_name: `${values.first_name} ${values.last_name}`,
+    };
+    setIsRequesting(true);
+
+    try {
+      const data = await SignupUser(payload);
+      console.log(data, "fhsjfjshdfhsdhfjd");
+    } catch ({ response = {} }: any) {
+      toast("Internal error occurred.", {
+        description: response?.data?.message,
+        action: {
+          label: "Retry",
+          onClick: () => onSubmit(values),
+        },
+      });
+    } finally {
+      setIsRequesting(false);
+    }
   };
 
   return (
@@ -172,8 +196,9 @@ const Signup = () => {
               className="w-full"
               type="submit"
               onClick={form.handleSubmit(onSubmit)}
+              disabled={isRequesting}
             >
-              Sign up
+              {isRequesting ? <DotLoader /> : "Sign Up"}
             </Button>
           </CardFooter>
           <div className="pl-5 space-x-2 mb-5">
