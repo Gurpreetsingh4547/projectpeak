@@ -85,10 +85,16 @@ const Signup = () => {
     setIsRequesting(true);
 
     try {
-      const data = await SignupUser(payload);
-      console.log(data, "fhsjfjshdfhsdhfjd");
+      const { message }: any = await SignupUser(payload);
+      toast("Sign up successfully.", {
+        description: message,
+        action: {
+          label: "Retry",
+          onClick: () => onSubmit(values),
+        },
+      });
     } catch ({ response = {} }: any) {
-      toast("Internal error occurred.", {
+      toast("Something went wrong.", {
         description: response?.data?.message,
         action: {
           label: "Retry",
@@ -115,7 +121,7 @@ const Signup = () => {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
+                className="space-y-2"
               >
                 <div className="flex flex-row justify-between">
                   <FormField

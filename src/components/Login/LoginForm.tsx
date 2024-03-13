@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "sonner";
 
 // Components
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,8 @@ import CheckboxWithLabel from "../common/Checkbox";
 import LOGO from "../../assets/logo.png";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { LoginUser } from "@/model/LoginSignup";
+import DotLoader from "../common/Loader";
 
 // Form Schema
 const formSchema = z.object({
@@ -50,6 +53,7 @@ const formSchema = z.object({
  */
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isRequesting, setIsRequesting] = useState(false);
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -63,10 +67,30 @@ const LoginForm = () => {
    * Handle form submission.
    * @param values - The form values.
    */
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const payload = { ...values };
+
+    setIsRequesting(true);
+    try {
+      const { message }: any = await LoginUser(payload);
+      toast("Sign up successfully.", {
+        description: message,
+        action: {
+          label: "Retry",
+          onClick: () => onSubmit(values),
+        },
+      });
+    } catch ({ response = {} }: any) {
+      toast("Something went wrong.", {
+        description: response?.data?.message,
+        action: {
+          label: "Retry",
+          onClick: () => onSubmit(values),
+        },
+      });
+    } finally {
+      setIsRequesting(false);
+    }
   };
 
   return (
@@ -84,7 +108,7 @@ const LoginForm = () => {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
+                className="space-y-2"
               >
                 <FormField
                   control={form.control}
@@ -141,8 +165,9 @@ const LoginForm = () => {
               className="w-full"
               type="submit"
               onClick={form.handleSubmit(onSubmit)}
+              disabled={isRequesting}
             >
-              Login
+              {isRequesting ? <DotLoader /> : "Login"}
             </Button>
           </CardFooter>
           <div className="pl-5 space-x-2 mb-5">
