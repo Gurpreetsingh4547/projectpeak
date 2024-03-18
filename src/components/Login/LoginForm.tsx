@@ -31,6 +31,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { LoginUser } from "@/model/LoginSignup";
 import DotLoader from "../common/Loader";
+import LocalStorageUtil from "@/service/localStorage";
+import UserVerfication from "../UserVerfication";
 
 // Form Schema
 const formSchema = z.object({
@@ -72,13 +74,16 @@ const LoginForm = () => {
 
     setIsRequesting(true);
     try {
-      const { message }: any = await LoginUser(payload);
-      toast("Sign up successfully.", {
+      const { message = "", data = {} }: any = await LoginUser(payload);
+
+      // Set User details in localStorage
+      LocalStorageUtil.setObject("USER", data);
+
+      // Check User verified or not
+      UserVerfication(false);
+
+      toast("Welcome back", {
         description: message,
-        action: {
-          label: "Retry",
-          onClick: () => onSubmit(values),
-        },
       });
     } catch ({ response = {} }: any) {
       toast("Something went wrong.", {

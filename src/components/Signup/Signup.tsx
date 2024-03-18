@@ -33,6 +33,8 @@ import { Link } from "react-router-dom";
 // Services
 import { SignupUser } from "@/model/LoginSignup";
 import DotLoader from "../common/Loader";
+import LocalStorageUtil from "@/service/localStorage";
+import UserVerfication from "../UserVerfication";
 
 // Form Schema
 const formSchema = z.object({
@@ -85,14 +87,16 @@ const Signup = () => {
     setIsRequesting(true);
 
     try {
-      const { message }: any = await SignupUser(payload);
+      const { message = "", data = {} }: any = await SignupUser(payload);
+
+      // Set User details in localStorage
+      LocalStorageUtil.setObject("USER", data);
+
       toast("Sign up successfully.", {
         description: message,
-        action: {
-          label: "Retry",
-          onClick: () => onSubmit(values),
-        },
       });
+
+      UserVerfication(false);
     } catch ({ response = {} }: any) {
       toast("Something went wrong.", {
         description: response?.data?.message,

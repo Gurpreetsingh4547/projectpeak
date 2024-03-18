@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginForm from "../components/Login/LoginForm";
 import Signup from "./Signup/Signup";
 import Auth from "./Auth";
+import VerifyUser from "./VerifyUser/VerifyUser";
 
 /**
  * The ProtectRouter component wraps the application's routes
@@ -24,6 +25,7 @@ export const ProtectRouter = () => {
         />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/verify" element={<VerifyUser />} />
       </Routes>
     </BrowserRouter>
   );
