@@ -28,11 +28,10 @@ import {
 import CheckboxWithLabel from "../common/Checkbox";
 import LOGO from "../../assets/logo.png";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LoginUser } from "@/model/LoginSignup";
 import DotLoader from "../common/Loader";
 import LocalStorageUtil from "@/service/localStorage";
-import UserVerfication from "../UserVerfication";
 
 // Form Schema
 const formSchema = z.object({
@@ -54,6 +53,7 @@ const formSchema = z.object({
  * Login Form Component.
  */
 const LoginForm = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isRequesting, setIsRequesting] = useState(false);
   // 1. Define your form.
@@ -80,7 +80,7 @@ const LoginForm = () => {
       LocalStorageUtil.setObject("USER", data);
 
       // Check User verified or not
-      UserVerfication(false);
+      navigate("/verify");
 
       toast("Welcome back", {
         description: message,

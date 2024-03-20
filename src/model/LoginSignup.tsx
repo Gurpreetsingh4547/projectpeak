@@ -36,3 +36,12 @@ export const SignupUser = async (payload: Signup) => {
 export const LoginUser = async (payload: Login) => {
   return await httpService.post("/login", payload);
 };
+
+/**
+ * Verify user with OTP
+ * @param otp The OTP
+ * @returns User details
+ */
+export const VerifyUserWithOtp = async (otp: object) => {
+  return await httpService.post("/verify", otp);
+};

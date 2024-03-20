@@ -19,6 +19,8 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import LocalStorageUtil from "@/service/localStorage";
+import { VerifyUserWithOtp } from "@/model/LoginSignup";
+import { toast } from "sonner";
 
 /**
  * Verify user with OTP
@@ -26,9 +28,39 @@ import LocalStorageUtil from "@/service/localStorage";
  */
 const VerifyUser = () => {
   const [isRequesting] = useState(false);
+  const [otp, setOtp] = useState("");
 
-  //   Current Login User
+  // Current Login User
   const currentLoginUser = LocalStorageUtil.getObject("USER");
+
+  /**
+   * Handle OTP change
+   * @param value The new OTP value
+   */
+  const handleOtpChange = (value: string) => {
+    // Set the new OTP value
+    setOtp(value);
+  };
+
+  /**
+   * Function for handling the otp submission.
+   * @return {Promise<void>} A promise that resolves when the form submission is handled.
+   */
+  const handleSubmit = async () => {
+    if (otp.length < 6) {
+      toast("Something went wrong.", {
+        description: "Please enter a valid OTP",
+      });
+      return;
+    }
+
+    try {
+      const data = await VerifyUserWithOtp({ otp: otp });
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex flex-col md:flex-row h-screen justify-center m-2">
@@ -44,7 +76,9 @@ const VerifyUser = () => {
             <CardDescription className="flex justify-center">
               <span>
                 Enter the verification code we sent to
-                <span className="text-black"> {currentLoginUser?.email}</span>
+                <span className="text-black flex justify-center">
+                  {currentLoginUser?.email}
+                </span>
               </span>
             </CardDescription>
           </CardHeader>
@@ -54,6 +88,7 @@ const VerifyUser = () => {
             </p>
             <InputOTP
               maxLength={6}
+              onChange={(value) => handleOtpChange(value)}
               className="flex justify-center"
               render={({ slots }) => (
                 <>
@@ -70,7 +105,7 @@ const VerifyUser = () => {
             <Button
               className="w-full"
               type="submit"
-              //   onClick={form.handleSubmit(onSubmit)}
+              onClick={handleSubmit}
               disabled={isRequesting}
             >
               {isRequesting ? <DotLoader /> : "Verify"}

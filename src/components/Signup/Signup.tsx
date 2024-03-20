@@ -28,13 +28,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import LOGO from "../../assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // Services
 import { SignupUser } from "@/model/LoginSignup";
 import DotLoader from "../common/Loader";
 import LocalStorageUtil from "@/service/localStorage";
-import UserVerfication from "../UserVerfication";
 
 // Form Schema
 const formSchema = z.object({
@@ -62,6 +61,7 @@ const formSchema = z.object({
  * Sign up component.
  */
 const Signup = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isRequesting, setIsRequesting] = useState(false);
 
@@ -96,7 +96,7 @@ const Signup = () => {
         description: message,
       });
 
-      UserVerfication(false);
+      navigate("/verify");
     } catch ({ response = {} }: any) {
       toast("Something went wrong.", {
         description: response?.data?.message,
