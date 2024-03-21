@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Packages
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -62,6 +62,8 @@ const formSchema = z.object({
  */
 const Signup = () => {
   const navigate = useNavigate();
+  // Current Login User
+  const currentLoginUser = LocalStorageUtil.getObject("USER");
   const [showPassword, setShowPassword] = useState(false);
   const [isRequesting, setIsRequesting] = useState(false);
 
@@ -109,6 +111,12 @@ const Signup = () => {
       setIsRequesting(false);
     }
   };
+
+  useEffect(() => {
+    if (currentLoginUser?._id && currentLoginUser?.verified) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div className="flex flex-col md:flex-row h-screen justify-center m-5">

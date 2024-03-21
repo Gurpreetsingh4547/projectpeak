@@ -11,10 +11,11 @@ const baseURL = API_BASE_URL; // Your API base URL
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL,
-  timeout: 10000, // Adjust timeout as needed
+  timeout: 100000, // Adjust timeout as needed
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 interface HttpService {

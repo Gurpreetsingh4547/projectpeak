@@ -1,3 +1,4 @@
+import LocalStorageUtil from "@/service/localStorage";
 import { node } from "prop-types";
 import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
@@ -11,10 +12,27 @@ interface AuthInterface {
  * if the user is not logged in
  */
 const Auth = ({ children }: AuthInterface): React.ReactNode => {
+  // Current Login User
+  const currentLoginUser = LocalStorageUtil.getObject("USER");
+
   /**
    * Determines if the user is logged in
    */
-  const isLoggedIn = false;
+  let isLoggedIn = true;
+
+  /**
+   * If the user is not logged in, redirect to the login route
+   */
+  if (!currentLoginUser?._id) {
+    isLoggedIn = false;
+  }
+
+  /**
+   * If the user is not verified, redirect to the verify route
+   */
+  if (!currentLoginUser?.verified && currentLoginUser?._id) {
+    return <Navigate to="/verify" />;
+  }
 
   /**
    * If the user is not logged in, redirect to the login route

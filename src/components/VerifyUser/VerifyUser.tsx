@@ -1,5 +1,7 @@
 // Packages
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 // Components
 import {
@@ -20,14 +22,16 @@ import {
 } from "@/components/ui/input-otp";
 import LocalStorageUtil from "@/service/localStorage";
 import { VerifyUserWithOtp } from "@/model/LoginSignup";
-import { toast } from "sonner";
 
 /**
  * Verify user with OTP
  * @returns React Node
  */
 const VerifyUser = () => {
-  const [isRequesting] = useState(false);
+  // Navigation Hooks
+  const navigate = useNavigate();
+
+  const [isRequesting, setIsRequesting] = useState(false);
   const [otp, setOtp] = useState("");
 
   // Current Login User
@@ -54,18 +58,49 @@ const VerifyUser = () => {
       return;
     }
 
+    setIsRequesting(true);
     try {
-      const data = await VerifyUserWithOtp({ otp: otp });
-      console.log(data);
-    } catch (error) {
-      console.log(error);
+      await VerifyUserWithOtp({
+        otp: parseInt(otp),
+      });
+      toast("Verification Successful");
+
+      // Set Login user verified
+      LocalStorageUtil.setObject("USER", {
+        ...currentLoginUser,
+        verified: true,
+      });
+
+      navigate("/");
+    } catch ({ response = {} }: any) {
+      toast("Something went wrong.", {
+        description: response?.data?.message,
+        action: {
+          label: "Retry",
+          onClick: handleSubmit,
+        },
+      });
+    } finally {
+      setIsRequesting(false);
     }
   };
+
+  useEffect(() => {
+    // Check if user is verified
+    if (currentLoginUser?.verified) {
+      navigate("/");
+    }
+
+    // Check if user is logged in
+    if (!currentLoginUser?._id) {
+      navigate("/login");
+    }
+  }, []);
 
   return (
     <div className="flex flex-col md:flex-row h-screen justify-center m-2">
       <div className="flex justify-center items-center">
-        <Card className="w-[400px]">
+        <Card className="w-[350px]">
           <div className="flex justify-center items-center">
             <img src={LOGO} alt="Project Peak" className="w-24 object-cover" />
           </div>
@@ -101,12 +136,12 @@ const VerifyUser = () => {
               )}
             />
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex justify-center">
             <Button
-              className="w-full"
+              className="min-w-60"
               type="submit"
               onClick={handleSubmit}
-              disabled={isRequesting}
+              disabled={isRequesting || otp.length < 6}
             >
               {isRequesting ? <DotLoader /> : "Verify"}
             </Button>

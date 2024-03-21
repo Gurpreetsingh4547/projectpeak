@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 // Packages
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -27,7 +29,6 @@ import {
 } from "@/components/ui/card";
 import CheckboxWithLabel from "../common/Checkbox";
 import LOGO from "../../assets/logo.png";
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LoginUser } from "@/model/LoginSignup";
 import DotLoader from "../common/Loader";
@@ -54,6 +55,9 @@ const formSchema = z.object({
  */
 const LoginForm = () => {
   const navigate = useNavigate();
+
+  // Current Login User
+  const currentLoginUser = LocalStorageUtil.getObject("USER");
   const [showPassword, setShowPassword] = useState(false);
   const [isRequesting, setIsRequesting] = useState(false);
   // 1. Define your form.
@@ -79,12 +83,16 @@ const LoginForm = () => {
       // Set User details in localStorage
       LocalStorageUtil.setObject("USER", data);
 
-      // Check User verified or not
-      navigate("/verify");
-
       toast("Welcome back", {
         description: message,
       });
+
+      // Check User verified or not
+      if (!data.verified) {
+        navigate("/verify");
+        return;
+      }
+      navigate("/");
     } catch ({ response = {} }: any) {
       toast("Something went wrong.", {
         description: response?.data?.message,
@@ -97,6 +105,12 @@ const LoginForm = () => {
       setIsRequesting(false);
     }
   };
+
+  useEffect(() => {
+    if (currentLoginUser?._id && currentLoginUser?.verified) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div className="flex flex-col md:flex-row h-screen justify-center m-5">
