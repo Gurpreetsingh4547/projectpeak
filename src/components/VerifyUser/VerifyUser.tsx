@@ -20,8 +20,12 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import OtpTimer from "../common/OtpTimer";
+
+// Services
+import { ResendOtp, VerifyUserWithOtp } from "@/model/LoginSignup";
 import LocalStorageUtil from "@/service/localStorage";
-import { VerifyUserWithOtp } from "@/model/LoginSignup";
+import { IsTrue } from "@/service/helper";
 
 /**
  * Verify user with OTP
@@ -33,6 +37,7 @@ const VerifyUser = () => {
 
   const [isRequesting, setIsRequesting] = useState(false);
   const [otp, setOtp] = useState("");
+  const [showOtpTimer, setShowOtpTimer] = useState(true);
 
   // Current Login User
   const currentLoginUser = LocalStorageUtil.getObject("USER");
@@ -82,6 +87,28 @@ const VerifyUser = () => {
       });
     } finally {
       setIsRequesting(false);
+    }
+  };
+
+  /**
+   * A function that handles the resend of OTP and sets the showOtpTimer to true.
+   */
+  const handleResendOtp = async () => {
+    setShowOtpTimer(true);
+
+    try {
+      const { message }: any = await ResendOtp();
+
+      // Show toast message
+      toast(message);
+    } catch ({ response = {} }: any) {
+      toast("Something went wrong.", {
+        description: response?.data?.message,
+        action: {
+          label: "Retry",
+          onClick: handleSubmit,
+        },
+      });
     }
   };
 
@@ -146,11 +173,29 @@ const VerifyUser = () => {
               {isRequesting ? <DotLoader /> : "Verify"}
             </Button>
           </CardFooter>
-          <div className="pl-5 space-x-2 mb-5">
-            <span>Didn't you receive the otp?</span>
-            <span className="text-sm  text-blue-600 cursor-pointer">
-              Resend OTP
-            </span>
+          <div className="space-x-2 mb-5 flex items-center justify-center">
+            {IsTrue(showOtpTimer, false) ? (
+              <>
+                <span>OTP sent to your email address.</span>
+                <span className="text-sm  text-blue-600">
+                  <OtpTimer
+                    seconds={120}
+                    onTimeout={() => setShowOtpTimer(false)}
+                    inMinutes
+                  />
+                </span>
+              </>
+            ) : (
+              <>
+                <span>Didn't you receive the otp?</span>
+                <span
+                  className="text-sm  text-blue-600 cursor-pointer"
+                  onClick={handleResendOtp}
+                >
+                  Resend OTP
+                </span>
+              </>
+            )}
           </div>
         </Card>
       </div>

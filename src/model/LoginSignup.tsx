@@ -45,3 +45,10 @@ export const LoginUser = async (payload: Login) => {
 export const VerifyUserWithOtp = async (otp: object) => {
   return await httpService.post("/verify", otp);
 };
+
+/**
+ * Resend OTP to user email
+ */
+export const ResendOtp = async () => {
+  return await httpService.post("/resend/otp", {});
+};

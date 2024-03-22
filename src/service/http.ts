@@ -1,5 +1,4 @@
 /* eslint-disable no-useless-catch */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 // Packages
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
@@ -7,8 +6,10 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 // Services
 import { API_BASE_URL } from '@/config/const';
 
-const baseURL = API_BASE_URL; // Your API base URL
+// Your API base URL
+const baseURL = API_BASE_URL;
 
+// Create an axios instance
 const axiosInstance: AxiosInstance = axios.create({
   baseURL,
   timeout: 100000, // Adjust timeout as needed
