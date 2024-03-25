@@ -1,8 +1,17 @@
-import LocalStorageUtil from "@/service/localStorage";
-import { node } from "prop-types";
+// Packages
 import { ReactNode } from "react";
+import { node } from "prop-types";
 import { Navigate } from "react-router-dom";
 
+// Comonents
+import NavigationBar from "./common/NavigationMenu";
+import { Sidebar } from "./common/Sidebar";
+
+// Services
+import LocalStorageUtil from "@/service/localStorage";
+import { HaveValue, IsTrue } from "@/service/helper";
+
+// Interface
 interface AuthInterface {
   children: ReactNode;
 }
@@ -23,28 +32,39 @@ const Auth = ({ children }: AuthInterface): React.ReactNode => {
   /**
    * If the user is not logged in, redirect to the login route
    */
-  if (!currentLoginUser?._id) {
+  if (!HaveValue(currentLoginUser?._id)) {
     isLoggedIn = false;
   }
 
   /**
    * If the user is not verified, redirect to the verify route
    */
-  if (!currentLoginUser?.verified && currentLoginUser?._id) {
+  if (
+    !IsTrue(currentLoginUser?.verified, false) &&
+    HaveValue(currentLoginUser?._id)
+  ) {
     return <Navigate to="/verify" />;
   }
 
   /**
    * If the user is not logged in, redirect to the login route
    */
-  if (!isLoggedIn) {
+  if (!IsTrue(isLoggedIn, false)) {
     return <Navigate to="/login" />;
   }
 
   /**
    * Otherwise return the wrapped component
    */
-  return children;
+  return (
+    <>
+      <NavigationBar />
+      <div className="flex justify-between">
+        <Sidebar className="hidden lg:block" />
+        <div className="m-5 w-full">{children}</div>
+      </div>
+    </>
+  );
 };
 
 /**

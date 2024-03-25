@@ -5,6 +5,7 @@ import LoginForm from "../components/Login/LoginForm";
 import Signup from "./Signup/Signup";
 import Auth from "./Auth";
 import VerifyUser from "./VerifyUser/VerifyUser";
+import Dashboard from "./Dashboard/Dashboard";
 
 /**
  * The ProtectRouter component wraps the application's routes
@@ -19,7 +20,7 @@ export const ProtectRouter = () => {
           path="/"
           element={
             <Auth>
-              <div>hello</div>
+              <Dashboard />
             </Auth>
           }
         />
