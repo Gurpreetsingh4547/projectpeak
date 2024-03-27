@@ -1,33 +1,70 @@
 // Packages
+import { number, string } from "prop-types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChartSimple } from "@fortawesome/free-solid-svg-icons";
+
+// Components
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { IsEqual } from "@/service/helper";
+
+// Interface
+interface CardProps {
+  title?: string;
+  taskDone?: number;
+  totalTask?: number;
+}
 
 /**
  * This function represents a CardComponent that displays information about Total Revenue.
+ * @param {string} title - The title of the card.
+ * @return {JSX.Element} The rendered CardComponent.
  */
-const CardComponent = () => {
+const CardComponent: React.FC<CardProps> = ({ title, taskDone, totalTask }) => {
+  /**
+   * Calculates the percentage of a partial value relative to a total value.
+   * @param {number} partialValue - The partial value to calculate the percentage of.
+   * @param {number} totalValue - The total value to calculate the percentage against.
+   * @return {number} The calculated percentage as a decimal.
+   */
+  const getPercentage = (partialValue: number = 0, totalValue: number = 0) => {
+    if (IsEqual(totalValue, 0) || IsEqual(partialValue, 0)) return 0;
+    return (100 * partialValue) / totalValue;
+  };
+
   return (
     <Card className="min-w-60 mb-5">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          className="h-4 w-4 text-muted-foreground"
-        >
-          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-        </svg>
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        <FontAwesomeIcon icon={faChartSimple} className="h-4 w-4" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">$45,231.89</div>
-        <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+        <div className="text-2xl font-bold">
+          {taskDone}/{totalTask}
+        </div>
+        <p className="text-xs text-muted-foreground">
+          {getPercentage(taskDone, totalTask)}% done from last month
+        </p>
       </CardContent>
     </Card>
   );
+};
+
+/**
+ * Component Prop Types
+ */
+CardComponent.propTypes = {
+  title: string,
+  taskDone: number,
+  totalTask: number,
+};
+
+/**
+ * Component default Props
+ */
+CardComponent.defaultProps = {
+  title: "Total Task Done",
+  taskDone: 0,
+  totalTask: 0,
 };
 
 export default CardComponent;

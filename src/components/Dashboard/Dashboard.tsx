@@ -12,7 +12,6 @@ const Dashboard = () => {
       <CardComponent />
       <CardComponent />
       <CardComponent />
-      <CardComponent />
     </div>
   );
 };
