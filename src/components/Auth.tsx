@@ -1,7 +1,8 @@
 // Packages
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { node } from "prop-types";
 import { Navigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 // Comonents
 import NavigationBar from "./common/NavigationMenu";
@@ -10,6 +11,8 @@ import { Sidebar } from "./common/Sidebar";
 // Services
 import LocalStorageUtil from "@/service/localStorage";
 import { HaveValue, IsTrue } from "@/service/helper";
+import { fetchProjects } from "@/redux/Reducers/Project";
+import { AppDispatch } from "@/redux/Store";
 
 // Interface
 interface AuthInterface {
@@ -23,6 +26,7 @@ interface AuthInterface {
 const Auth = ({ children }: AuthInterface): React.ReactNode => {
   // Current Login User
   const currentLoginUser = LocalStorageUtil.getObject("USER");
+  const dispatch = useDispatch<AppDispatch>();
 
   /**
    * Determines if the user is logged in
@@ -35,6 +39,10 @@ const Auth = ({ children }: AuthInterface): React.ReactNode => {
   if (!HaveValue(currentLoginUser?._id)) {
     isLoggedIn = false;
   }
+
+  useEffect(() => {
+    dispatch(fetchProjects());
+  }, [dispatch]);
 
   /**
    * If the user is not verified, redirect to the verify route

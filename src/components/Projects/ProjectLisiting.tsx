@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+
+// Packages
+import { useSelector } from "react-redux";
 
 // Components
 import {
@@ -11,10 +14,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import TableLoader from "../common/ContentLoader/TableLoader";
-import { toast } from "sonner";
 
 // Services
-import { GetProjects } from "@/model/Projects";
 import { ArrayHaveValues, IsTrue } from "@/service/helper";
 
 /**
@@ -22,32 +23,7 @@ import { ArrayHaveValues, IsTrue } from "@/service/helper";
  * @return {JSX.Element} The rendered JSX element
  */
 const ProjectLisiting: React.FC = () => {
-  const [projectList, setProjectList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  /**
-   * A function that retrieves a list of projects asynchronously.
-   * @return {Promise<void>} This function does not return anything.
-   */
-  const getListOfProjects = async () => {
-    setIsLoading(true);
-    try {
-      const { data = [] }: any = await GetProjects();
-
-      setProjectList(data);
-      console.log(data);
-    } catch ({ response = {} }: any) {
-      toast("Something went wrong.", {
-        description: response?.data?.message,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getListOfProjects();
-  }, []);
+  const { items, loading } = useSelector((state: any) => state.projects);
 
   return (
     <div className="h-full flex-1 flex-col space-y-8 md:flex">
@@ -63,9 +39,9 @@ const ProjectLisiting: React.FC = () => {
         </div>
       </div>
       {/* Content Loader */}
-      {IsTrue(isLoading, false) && <TableLoader />}
+      {IsTrue(loading, false) && <TableLoader />}
 
-      {!IsTrue(isLoading, false) && (
+      {!IsTrue(loading, false) && (
         <Table>
           <TableCaption>A list of your recent projects.</TableCaption>
           <TableHeader>
@@ -73,12 +49,12 @@ const ProjectLisiting: React.FC = () => {
               <TableHead className="w-[100px]">SR. No.</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Description</TableHead>
-              <TableHead className="text-right"></TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {ArrayHaveValues(projectList) &&
-              projectList.map((item: any, index: number) => (
+            {ArrayHaveValues(items) &&
+              items.map((item: any, index: number) => (
                 <TableRow key={item?._id}>
                   <TableCell className="font-medium">{index + 1}</TableCell>
                   <TableCell>{item?.name}</TableCell>

@@ -5,6 +5,8 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 // Services
 import { API_BASE_URL } from '@/config/const';
+import { IsEqual } from './helper';
+import LocalStorageUtil from './localStorage';
 
 // Your API base URL
 const baseURL = API_BASE_URL;
@@ -19,6 +21,22 @@ const axiosInstance: AxiosInstance = axios.create({
   withCredentials: true,
 });
 
+// Add a response interceptor
+axiosInstance.interceptors.response.use(
+  response => {
+    return response;
+  },
+  error => {
+    const {status} = error.response;
+    if (IsEqual(status, 401)) {
+      LocalStorageUtil.clear();
+      window.location.href = '/login';
+      return;
+    }
+    throw error;
+  }
+);
+
 interface HttpService {
   get<T>(url: string, params?: any): Promise<T>;
   post<T>(url: string, data: any): Promise<T>;
@@ -26,6 +44,9 @@ interface HttpService {
   delete<T>(url: string): Promise<T>;
 }
 
+/**
+ * HTTP Service instance
+ */
 const httpService: HttpService = {
 
   /**
