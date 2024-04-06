@@ -1,12 +1,15 @@
 // Packages
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { node } from "prop-types";
 import { Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { faClose, faSliders } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Comonents
 import NavigationBar from "./common/NavigationMenu";
 import { Sidebar } from "./common/Sidebar";
+import { Button } from "./ui/button";
 
 // Services
 import LocalStorageUtil from "@/service/localStorage";
@@ -27,6 +30,8 @@ const Auth = ({ children }: AuthInterface): React.ReactNode => {
   // Current Login User
   const currentLoginUser = LocalStorageUtil.getObject("USER");
   const dispatch = useDispatch<AppDispatch>();
+
+  const [toggleSidebar, setToggleSidebar] = useState(false);
 
   /**
    * Determines if the user is logged in
@@ -68,7 +73,23 @@ const Auth = ({ children }: AuthInterface): React.ReactNode => {
     <>
       <NavigationBar />
       <div className="flex justify-between">
-        <Sidebar className="hidden lg:block" />
+        <Sidebar
+          className={`${
+            IsTrue(toggleSidebar, false)
+              ? "absolute w-64 bg-white shadow-lg transform transition-transform translate-x-0 z-40"
+              : "hidden"
+          } lg:block`}
+        />
+        <Button
+          className="lg:hidden fixed w-5 h-8 rounded-br-3xl z-50"
+          variant="outline"
+          title={IsTrue(toggleSidebar, false) ? "Close" : "Open"}
+          onClick={() => setToggleSidebar(!toggleSidebar)}
+        >
+          <FontAwesomeIcon
+            icon={IsTrue(toggleSidebar, false) ? faClose : faSliders}
+          />
+        </Button>
         <div className="m-5 w-full">{children}</div>
       </div>
     </>

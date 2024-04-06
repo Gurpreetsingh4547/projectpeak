@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 // Packages
 import {
   faBarsProgress,
@@ -10,10 +12,13 @@ import { Link, useLocation } from "react-router-dom";
 
 // Components
 import { Button } from "@/components/ui/button";
+import DrawerComponent from "./Modal/Drawer";
+
+// Services
+import { IsEqual } from "@/service/helper";
 
 // CSS Classes
 import { cn } from "@/lib/utils";
-import { IsEqual } from "@/service/helper";
 
 // Props Interface
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -25,6 +30,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
  */
 const Sidebar = ({ className }: SidebarProps) => {
   const { pathname } = useLocation();
+  const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
 
   // Check if the current path is active
   const isActive = (path: string) => IsEqual(pathname, path);
@@ -61,10 +67,24 @@ const Sidebar = ({ className }: SidebarProps) => {
                 Browse Projects
               </Link>
             </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <FontAwesomeIcon icon={faCirclePlus} className="mr-2 h-4 w-4" />
-              Create New Project
-            </Button>
+            <DrawerComponent
+              triggerContent={
+                <Button variant="ghost" className="w-full justify-start">
+                  <FontAwesomeIcon
+                    icon={faCirclePlus}
+                    className="mr-2 h-4 w-4"
+                  />
+                  Create New Project
+                </Button>
+              }
+              content={<div className="h-40">Create New Project</div>}
+              isVisible={isCreateProjectOpen}
+              setIsVisible={setIsCreateProjectOpen}
+              primaryButton="Create"
+              secondaryButton="Cancel"
+              title="Create New Project"
+              description="Effortlessly create projects with automated, AI-generated descriptions tailored to your project's title."
+            />
             <Button
               variant={!isActive("/users") ? "ghost" : "secondary"}
               className="w-full justify-start"

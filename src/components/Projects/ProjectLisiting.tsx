@@ -46,7 +46,7 @@ const ProjectLisiting: React.FC = () => {
           <TableCaption>A list of your recent projects.</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">SR. No.</TableHead>
+              <TableHead className="w-[5rem]">SR. No.</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Description</TableHead>
               <TableHead className="text-right">Actions</TableHead>
