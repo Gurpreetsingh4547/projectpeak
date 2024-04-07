@@ -40,6 +40,7 @@ interface DrawerInterface {
   secondaryButton?: ReactNode | string;
   isVisible?: boolean;
   setIsVisible?: (value: boolean) => void;
+  showFooter?: boolean;
 }
 
 /**
@@ -56,6 +57,7 @@ const DrawerComponent: FC<DrawerInterface> = ({
   secondaryButton,
   isVisible,
   setIsVisible,
+  showFooter,
 }) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -69,15 +71,17 @@ const DrawerComponent: FC<DrawerInterface> = ({
             <DialogDescription>{description}</DialogDescription>
           </DialogHeader>
           {content}
-          <DialogFooter>
-            <Button>{primaryButton}</Button>
-            <Button
-              variant="outline"
-              onClick={() => setIsVisible && setIsVisible(false)}
-            >
-              {secondaryButton}
-            </Button>
-          </DialogFooter>
+          {IsTrue(showFooter, false) && (
+            <DialogFooter>
+              <Button>{primaryButton}</Button>
+              <Button
+                variant="outline"
+                onClick={() => setIsVisible && setIsVisible(false)}
+              >
+                {secondaryButton}
+              </Button>
+            </DialogFooter>
+          )}
         </DialogContent>
       </Dialog>
     );
@@ -92,15 +96,17 @@ const DrawerComponent: FC<DrawerInterface> = ({
           <DrawerDescription>{description}</DrawerDescription>
         </DrawerHeader>
         {content}
-        <DrawerFooter>
-          <Button>{primaryButton}</Button>
-          <Button
-            variant="outline"
-            onClick={() => setIsVisible && setIsVisible(false)}
-          >
-            {secondaryButton}
-          </Button>
-        </DrawerFooter>
+        {IsTrue(showFooter, false) && (
+          <DrawerFooter>
+            <Button>{primaryButton}</Button>
+            <Button
+              variant="outline"
+              onClick={() => setIsVisible && setIsVisible(false)}
+            >
+              {secondaryButton}
+            </Button>
+          </DrawerFooter>
+        )}
       </DrawerContent>
     </Drawer>
   );
@@ -116,6 +122,7 @@ DrawerComponent.propTypes = {
   secondaryButton: oneOfType([node, string]),
   isVisible: bool,
   setIsVisible: func,
+  showFooter: bool,
 };
 
 // Component Default Propss
@@ -128,6 +135,7 @@ DrawerComponent.defaultProps = {
   secondaryButton: "Secondary Button",
   isVisible: false,
   setIsVisible: () => {},
+  showFooter: true,
 };
 
 export default DrawerComponent;

@@ -60,7 +60,7 @@ const LoginForm = () => {
   const currentLoginUser = LocalStorageUtil.getObject("USER");
   const [showPassword, setShowPassword] = useState(false);
   const [isRequesting, setIsRequesting] = useState(false);
-  // 1. Define your form.
+  // Define form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

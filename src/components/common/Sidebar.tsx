@@ -13,6 +13,7 @@ import { Link, useLocation } from "react-router-dom";
 // Components
 import { Button } from "@/components/ui/button";
 import DrawerComponent from "./Modal/Drawer";
+import CreateProjectForm from "../Projects/CreateProjectForm";
 
 // Services
 import { IsEqual } from "@/service/helper";
@@ -21,14 +22,16 @@ import { IsEqual } from "@/service/helper";
 import { cn } from "@/lib/utils";
 
 // Props Interface
-interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
+  toggleSidebar: () => void;
+}
 
 /**
  * Renders the Sidebar component with various options like Dashboard, Overview of Projects, Browse Projects, Create New Project, and Users.
  * @param {SidebarProps} className - the CSS class for styling the sidebar
  * @return {JSX.Element} the rendered Sidebar component
  */
-const Sidebar = ({ className }: SidebarProps) => {
+const Sidebar = ({ className, toggleSidebar }: SidebarProps) => {
   const { pathname } = useLocation();
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
 
@@ -46,6 +49,7 @@ const Sidebar = ({ className }: SidebarProps) => {
             <Button
               variant={!isActive("/") ? "ghost" : "secondary"}
               className="w-full justify-start"
+              onClick={toggleSidebar}
             >
               <Link to="/">
                 <FontAwesomeIcon
@@ -58,6 +62,7 @@ const Sidebar = ({ className }: SidebarProps) => {
             <Button
               variant={!isActive("/projects") ? "ghost" : "secondary"}
               className="w-full justify-start"
+              onClick={toggleSidebar}
             >
               <Link to="/projects">
                 <FontAwesomeIcon
@@ -69,7 +74,11 @@ const Sidebar = ({ className }: SidebarProps) => {
             </Button>
             <DrawerComponent
               triggerContent={
-                <Button variant="ghost" className="w-full justify-start">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start"
+                  onClick={toggleSidebar}
+                >
                   <FontAwesomeIcon
                     icon={faCirclePlus}
                     className="mr-2 h-4 w-4"
@@ -77,17 +86,21 @@ const Sidebar = ({ className }: SidebarProps) => {
                   Create New Project
                 </Button>
               }
-              content={<div className="h-40">Create New Project</div>}
+              content={
+                <CreateProjectForm setIsVisible={setIsCreateProjectOpen} />
+              }
               isVisible={isCreateProjectOpen}
               setIsVisible={setIsCreateProjectOpen}
               primaryButton="Create"
               secondaryButton="Cancel"
               title="Create New Project"
+              showFooter={false}
               description="Effortlessly create projects with automated, AI-generated descriptions tailored to your project's title."
             />
             <Button
               variant={!isActive("/users") ? "ghost" : "secondary"}
               className="w-full justify-start"
+              onClick={toggleSidebar}
             >
               <Link to="/users">
                 <FontAwesomeIcon icon={faUsers} className="mr-2 h-4 w-4" />

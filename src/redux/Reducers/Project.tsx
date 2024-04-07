@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from "sonner";
 
 // Services
-import { GetProjects } from "@/model/Projects";
+import { CreateProjects, GetProjects } from "@/model/Projects";
 import { HaveValue, IsEqual, IsObjectHaveValue } from "@/service/helper";
 
 /**
@@ -29,13 +29,19 @@ export const fetchProjects = createAsyncThunk<Project[]>(
   }
 );
 
-export const addProject = createAsyncThunk<Project, Project>(
-  "projects/addProject",
-  async (itemData) => {
-    const response = await axios.post<Project>("your_api_endpoint", itemData);
-    return response.data;
+/**
+ * Add project to API
+ */
+export const addProject = createAsyncThunk<
+  Project,
+  {
+    name: string;
+    description: string;
   }
-);
+>("projects/addProject", async (itemData) => {
+  const { data = {} }: any = await CreateProjects(itemData);
+  return data;
+});
 
 export const updateProject = createAsyncThunk<
   Project,
@@ -58,6 +64,7 @@ interface ProjectsState {
   items: Project[];
   loading: boolean;
   error: any; // Adjust type as needed
+  isRequesting: boolean;
 }
 
 // Initial state
@@ -65,6 +72,7 @@ const initialState: ProjectsState = {
   items: [],
   loading: false,
   error: null,
+  isRequesting: false,
 };
 
 // Reducers
@@ -89,9 +97,21 @@ const projectsSlice = createSlice({
           toast(action?.error?.message);
         }
       })
+      .addCase(addProject?.pending, (state) => {
+        state.isRequesting = true;
+      })
       .addCase(addProject?.fulfilled, (state, action) => {
+        state.isRequesting = false;
         if (IsObjectHaveValue(action?.payload)) {
           state?.items?.push(action?.payload);
+        }
+      })
+      .addCase(addProject?.rejected, (state, action) => {
+        state.isRequesting = false;
+        state.error = action?.error;
+        console.log(action.error);
+        if (HaveValue(action?.error?.message)) {
+          toast(action?.error?.message);
         }
       })
       .addCase(updateProject?.fulfilled, (state, action) => {
