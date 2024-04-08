@@ -29,6 +29,7 @@ import { useMediaQuery } from "@/hooks/useMedaiQuery";
 
 // Services
 import { IsTrue } from "@/service/helper";
+import DotLoader from "../Loader";
 
 // Component Interface
 interface DrawerInterface {
@@ -41,6 +42,8 @@ interface DrawerInterface {
   isVisible?: boolean;
   setIsVisible?: (value: boolean) => void;
   showFooter?: boolean;
+  handlePrimaryAction?: () => void;
+  isRequesting?: boolean;
 }
 
 /**
@@ -58,6 +61,8 @@ const DrawerComponent: FC<DrawerInterface> = ({
   isVisible,
   setIsVisible,
   showFooter,
+  handlePrimaryAction,
+  isRequesting,
 }) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -73,7 +78,9 @@ const DrawerComponent: FC<DrawerInterface> = ({
           {content}
           {IsTrue(showFooter, false) && (
             <DialogFooter>
-              <Button>{primaryButton}</Button>
+              <Button onClick={handlePrimaryAction} disabled={isRequesting}>
+                {IsTrue(isRequesting, false) ? <DotLoader /> : primaryButton}
+              </Button>
               <Button
                 variant="outline"
                 onClick={() => setIsVisible && setIsVisible(false)}
@@ -98,7 +105,9 @@ const DrawerComponent: FC<DrawerInterface> = ({
         {content}
         {IsTrue(showFooter, false) && (
           <DrawerFooter>
-            <Button>{primaryButton}</Button>
+            <Button onClick={handlePrimaryAction} disabled={isRequesting}>
+              {IsTrue(isRequesting, false) ? <DotLoader /> : primaryButton}
+            </Button>
             <Button
               variant="outline"
               onClick={() => setIsVisible && setIsVisible(false)}
@@ -123,6 +132,8 @@ DrawerComponent.propTypes = {
   isVisible: bool,
   setIsVisible: func,
   showFooter: bool,
+  handlePrimaryAction: func,
+  isRequesting: bool,
 };
 
 // Component Default Propss
@@ -136,6 +147,8 @@ DrawerComponent.defaultProps = {
   isVisible: false,
   setIsVisible: () => {},
   showFooter: true,
+  handlePrimaryAction: () => {},
+  isRequesting: false,
 };
 
 export default DrawerComponent;

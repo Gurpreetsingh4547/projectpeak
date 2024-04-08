@@ -1,29 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
 
 // Packages
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 
 // Components
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import TableLoader from "../common/ContentLoader/TableLoader";
+import DrawerComponent from "../common/Modal/Drawer";
+import { Button } from "../ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 // Services
 import { ArrayHaveValues, IsTrue } from "@/service/helper";
+
+// Redux services
+import { AppDispatch } from "@/redux/Store";
+import { deleteProject } from "@/redux/Reducers/Project";
 
 /**
  * React functional component for ProjectListing.
  * @return {JSX.Element} The rendered JSX element
  */
 const ProjectLisiting: React.FC = () => {
-  const { items, loading } = useSelector((state: any) => state.projects);
+  const dispatch = useDispatch<AppDispatch>();
+  const { items, loading, isRequesting } = useSelector(
+    (state: any) => state.projects
+  );
+  const [isDeleteProjectOpen, setIsDeleteProjectOpen] = useState(false);
+  const [idToDeleteProject, setIdToDeleteProject] = useState(0);
+
+  /**
+   * Deletes a project from the listing.
+   */
+  const deleteProjectFromListing = () => {
+    const payload = {
+      id: idToDeleteProject,
+      callback: () => setIsDeleteProjectOpen(false),
+    };
+
+    // Dispatch delete project action
+    dispatch(deleteProject(payload));
+  };
 
   return (
     <div className="h-full flex-1 flex-col space-y-8 md:flex">
@@ -42,29 +73,75 @@ const ProjectLisiting: React.FC = () => {
       {IsTrue(loading, false) && <TableLoader />}
 
       {!IsTrue(loading, false) && (
-        <Table>
-          <TableCaption>A list of your recent projects.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[5rem]">SR. No.</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {ArrayHaveValues(items) &&
-              items.map((item: any, index: number) => (
-                <TableRow key={item?._id}>
-                  <TableCell className="font-medium">{index + 1}</TableCell>
-                  <TableCell>{item?.name}</TableCell>
-                  <TableCell>{item?.description}</TableCell>
-                  <TableCell className="text-right">Actions</TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
+        <div className="border rounded-md">
+          <Table>
+            <TableHeader className="bg-slate-100">
+              <TableRow>
+                <TableHead className="w-[5rem]">SR. No.</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {ArrayHaveValues(items) &&
+                items.map((item: any, index: number) => (
+                  <TableRow key={item?._id}>
+                    <TableCell className="font-medium">{index + 1}</TableCell>
+                    <TableCell>{item?.name}</TableCell>
+                    <TableCell>{item?.description}</TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="h-8 w-8 p-0 data-[state=open]:bg-muted"
+                          >
+                            <FontAwesomeIcon
+                              icon={faEllipsis}
+                              className="h-4 w-4"
+                            />
+                            <span className="sr-only">Open menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-[160px]">
+                          <DropdownMenuItem className="cursor-pointer">
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="cursor-pointer">
+                            Make a copy
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setIsDeleteProjectOpen(true);
+                              setIdToDeleteProject(item?._id);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </div>
       )}
+
+      <DrawerComponent
+        triggerContent={<></>}
+        content={<></>}
+        isVisible={isDeleteProjectOpen}
+        setIsVisible={setIsDeleteProjectOpen}
+        primaryButton="Confirm"
+        secondaryButton="Cancel"
+        title="Confirmation"
+        isRequesting={isRequesting}
+        handlePrimaryAction={deleteProjectFromListing}
+        description="You are about to delete this Project. Click confirm to proceed."
+      />
     </div>
   );
 };

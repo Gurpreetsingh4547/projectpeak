@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from "sonner";
 
 // Services
-import { CreateProjects, GetProjects } from "@/model/Projects";
+import { CreateProjects, DeleteProject, GetProjects } from "@/model/Projects";
 import { HaveValue, IsEqual, IsObjectHaveValue } from "@/service/helper";
 
 /**
@@ -16,6 +16,9 @@ import { HaveValue, IsEqual, IsObjectHaveValue } from "@/service/helper";
 interface Project {
   id: number;
   name: string;
+  description: string;
+  created_at: string;
+  callback: () => void;
 }
 
 /**
@@ -37,10 +40,17 @@ export const addProject = createAsyncThunk<
   {
     name: string;
     description: string;
+    callback: () => void;
   }
->("projects/addProject", async (itemData) => {
-  const { data = {} }: any = await CreateProjects(itemData);
-  return data;
+>("projects/addProject", async (itemData, thunkApi) => {
+  const { name, description, callback } = itemData;
+  try {
+    const data: any = await CreateProjects({ name, description });
+    callback();
+    return data;
+  } catch (error: any) {
+    return thunkApi.rejectWithValue(error?.response?.data);
+  }
 });
 
 export const updateProject = createAsyncThunk<
@@ -51,13 +61,25 @@ export const updateProject = createAsyncThunk<
   return response.data;
 });
 
-export const deleteProject = createAsyncThunk<number, number>(
-  "projects/deleteProject",
-  async (id) => {
-    await axios.delete(`your_api_endpoint/${id}`);
-    return id;
+/**
+ * Delete project from API
+ */
+export const deleteProject = createAsyncThunk<
+  Project,
+  {
+    id: number;
+    callback: () => void;
   }
-);
+>("projects/deleteProject", async (payload: any, thunkApi) => {
+  const { id, callback } = payload;
+  try {
+    const data: any = await DeleteProject(id);
+    callback();
+    return data;
+  } catch (error: any) {
+    return thunkApi.rejectWithValue(error?.response?.data);
+  }
+});
 
 // Define a type for the slice state
 interface ProjectsState {
@@ -100,18 +122,19 @@ const projectsSlice = createSlice({
       .addCase(addProject?.pending, (state) => {
         state.isRequesting = true;
       })
-      .addCase(addProject?.fulfilled, (state, action) => {
+      .addCase(addProject?.fulfilled, (state, action: any) => {
         state.isRequesting = false;
-        if (IsObjectHaveValue(action?.payload)) {
-          state?.items?.push(action?.payload);
+        if (IsObjectHaveValue(action?.payload?.project)) {
+          state?.items?.push(action?.payload?.project);
+
+          toast(action?.payload?.message || "Project added successfully");
         }
       })
-      .addCase(addProject?.rejected, (state, action) => {
+      .addCase(addProject?.rejected, (state, action: any) => {
         state.isRequesting = false;
-        state.error = action?.error;
-        console.log(action.error);
-        if (HaveValue(action?.error?.message)) {
-          toast(action?.error?.message);
+        state.error = action?.payload;
+        if (HaveValue(action?.payload?.message)) {
+          toast(action?.payload?.message);
         }
       })
       .addCase(updateProject?.fulfilled, (state, action) => {
@@ -122,10 +145,24 @@ const projectsSlice = createSlice({
           state.items[index] = action?.payload;
         }
       })
-      .addCase(deleteProject?.fulfilled, (state, action) => {
-        state.items = state?.items?.filter(
-          (item) => !IsEqual(item.id, action.payload)
-        );
+      .addCase(deleteProject?.pending, (state) => {
+        state.isRequesting = true;
+      })
+      .addCase(deleteProject?.rejected, (state, action: any) => {
+        state.isRequesting = false;
+        state.error = action?.payload;
+        if (HaveValue(action?.payload?.message)) {
+          toast(action?.payload?.message);
+        }
+      })
+      .addCase(deleteProject?.fulfilled, (state, action: any) => {
+        state.isRequesting = false;
+        if (HaveValue(action?.meta?.arg?.id)) {
+          state.items = state?.items?.filter(
+            (item: any) => !IsEqual(item._id, action?.meta?.arg?.id)
+          );
+          toast(action?.payload?.message || "Project deleted successfully");
+        }
       });
   },
 });

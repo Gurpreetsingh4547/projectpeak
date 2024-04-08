@@ -15,3 +15,11 @@ export const GetProjects = async () => {
 export const CreateProjects = async (payload: any) => {
   return await httpService.post("/add/project", payload);
 };
+
+/**
+ * Delete Project function creates a new project.
+ * @return {Promise<any>} Response data from the API.
+ */
+export const DeleteProject = async (id: number) => {
+  return await httpService.delete(`/delete/projects/${id}`);
+};

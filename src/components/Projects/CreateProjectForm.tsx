@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/redux/Store";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
 
 // Components
 import {
@@ -23,10 +25,10 @@ import DotLoader from "../common/Loader";
 
 // Services
 import { IsTrue } from "@/service/helper";
+import { addProject } from "@/redux/Reducers/Project";
 
 // Hooks
 import { useMediaQuery } from "@/hooks/useMedaiQuery";
-import { addProject } from "@/redux/Reducers/Project";
 
 // Form Schema
 const formSchema = z.object({
@@ -65,7 +67,7 @@ const CreateProjectForm: FC<FormInterface> = ({ setIsVisible, className }) => {
    * @param values - The form values.
    */
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const payload = { ...values };
+    const payload = { ...values, callback: () => setIsVisible(false) };
     dispatch(addProject(payload));
   };
 
@@ -95,7 +97,12 @@ const CreateProjectForm: FC<FormInterface> = ({ setIsVisible, className }) => {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <div className="flex items-baseline justify-between">
+                  <FormLabel>Description</FormLabel>
+                  <Button title="Generate AI Description" className="w-5 h-8">
+                    <FontAwesomeIcon icon={faWandMagicSparkles} />
+                  </Button>
+                </div>
                 <FormControl>
                   <Textarea placeholder="Enter Description" {...field} />
                 </FormControl>
