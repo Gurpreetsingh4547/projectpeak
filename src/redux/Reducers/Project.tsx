@@ -1,10 +1,14 @@
 // Packages
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { toast } from "sonner";
 
 // Services
-import { CreateProjects, DeleteProject, GetProjects } from "@/model/Projects";
+import {
+  CreateProjects,
+  DeleteProject,
+  GetProjects,
+  UpdateProjects,
+} from "@/model/Projects";
 import { HaveValue, IsEqual, IsObjectHaveValue } from "@/service/helper";
 
 /**
@@ -53,12 +57,26 @@ export const addProject = createAsyncThunk<
   }
 });
 
+/**
+ * Update project to API
+ */
 export const updateProject = createAsyncThunk<
   Project,
-  { id: number; newData: Partial<Project> }
->("projects/updateProject", async ({ id, newData }) => {
-  const response = await axios.put<Project>(`your_api_endpoint/${id}`, newData);
-  return response.data;
+  {
+    name: string;
+    description: string;
+    callback: () => void;
+    id: number;
+  }
+>("projects/updateProject", async (itemData, thunkApi) => {
+  const { name, description, id, callback } = itemData;
+  try {
+    const data: any = await UpdateProjects({ name, description }, id);
+    callback();
+    return data;
+  } catch (error: any) {
+    return thunkApi.rejectWithValue(error?.response?.data);
+  }
 });
 
 /**
@@ -137,12 +155,22 @@ const projectsSlice = createSlice({
           toast(action?.payload?.message);
         }
       })
+      .addCase(updateProject?.pending, (state) => {
+        state.isRequesting = true;
+      })
       .addCase(updateProject?.fulfilled, (state, action) => {
         const index = state?.items?.findIndex((item) =>
           IsEqual(item?.id, action?.payload?.id)
         );
         if (!IsEqual(index, -1)) {
           state.items[index] = action?.payload;
+        }
+      })
+      .addCase(updateProject?.rejected, (state, action: any) => {
+        state.isRequesting = false;
+        state.error = action?.payload;
+        if (HaveValue(action?.payload?.message)) {
+          toast(action?.payload?.message);
         }
       })
       .addCase(deleteProject?.pending, (state) => {

@@ -23,3 +23,11 @@ export const CreateProjects = async (payload: any) => {
 export const DeleteProject = async (id: number) => {
   return await httpService.delete(`/delete/projects/${id}`);
 };
+
+/**
+ * Upate Project function udates a project.
+ * @return {Promise<any>} Response data from the API.
+ */
+export const UpdateProjects = async (payload: any, id: number) => {
+  return await httpService.put(`/delete/projects/${id}`, payload);
+};

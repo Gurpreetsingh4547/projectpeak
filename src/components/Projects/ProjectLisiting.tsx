@@ -23,6 +23,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import CreateProjectForm from "./CreateProjectForm";
 
 // Services
 import { ArrayHaveValues, IsTrue } from "@/service/helper";
@@ -42,6 +43,8 @@ const ProjectLisiting: React.FC = () => {
   );
   const [isDeleteProjectOpen, setIsDeleteProjectOpen] = useState(false);
   const [idToDeleteProject, setIdToDeleteProject] = useState(0);
+  const [isUpdateProjectOpen, setIsUpdateProjectOpen] = useState(false);
+  const [currentProject, setCurrentProject] = useState<any>({});
 
   /**
    * Deletes a project from the listing.
@@ -105,7 +108,13 @@ const ProjectLisiting: React.FC = () => {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-[160px]">
-                          <DropdownMenuItem className="cursor-pointer">
+                          <DropdownMenuItem
+                            className="cursor-pointer"
+                            onClick={() => {
+                              setIsUpdateProjectOpen(true);
+                              setCurrentProject(item);
+                            }}
+                          >
                             Edit
                           </DropdownMenuItem>
                           <DropdownMenuItem className="cursor-pointer">
@@ -142,6 +151,25 @@ const ProjectLisiting: React.FC = () => {
         handlePrimaryAction={deleteProjectFromListing}
         description="You are about to delete this Project. Click confirm to proceed."
       />
+
+      {IsTrue(isUpdateProjectOpen, false) && (
+        <DrawerComponent
+          triggerContent={<></>}
+          content={
+            <CreateProjectForm
+              currentProject={currentProject}
+              setIsVisible={setIsUpdateProjectOpen}
+            />
+          }
+          isVisible={isUpdateProjectOpen}
+          setIsVisible={setIsUpdateProjectOpen}
+          primaryButton="Update"
+          secondaryButton="Cancel"
+          title="Update Project Details"
+          showFooter={false}
+          description="Effortlessly create projects with automated, AI-generated descriptions tailored to your project's title."
+        />
+      )}
     </div>
   );
 };

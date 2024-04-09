@@ -24,8 +24,8 @@ import { Textarea } from "../ui/textarea";
 import DotLoader from "../common/Loader";
 
 // Services
-import { IsTrue } from "@/service/helper";
-import { addProject } from "@/redux/Reducers/Project";
+import { HaveValue, IsTrue } from "@/service/helper";
+import { addProject, updateProject } from "@/redux/Reducers/Project";
 
 // Hooks
 import { useMediaQuery } from "@/hooks/useMedaiQuery";
@@ -47,9 +47,14 @@ const formSchema = z.object({
 interface FormInterface {
   setIsVisible: (value: boolean) => void;
   className?: string;
+  currentProject?: object | any;
 }
 
-const CreateProjectForm: FC<FormInterface> = ({ setIsVisible, className }) => {
+const CreateProjectForm: FC<FormInterface> = ({
+  setIsVisible,
+  className,
+  currentProject,
+}) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const { isRequesting } = useSelector((state: any) => state.projects);
@@ -57,8 +62,8 @@ const CreateProjectForm: FC<FormInterface> = ({ setIsVisible, className }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      description: "",
+      name: currentProject?.name || "",
+      description: currentProject?.description || "",
     },
   });
 
@@ -67,7 +72,16 @@ const CreateProjectForm: FC<FormInterface> = ({ setIsVisible, className }) => {
    * @param values - The form values.
    */
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const payload = { ...values, callback: () => setIsVisible(false) };
+    const payload: any = { ...values, callback: () => setIsVisible(false) };
+
+    if (HaveValue(currentProject?._id)) {
+      payload.id = currentProject?._id;
+      // Dispatch add project action
+      dispatch(updateProject(payload));
+      return;
+    }
+
+    // Dispatch add project action
     dispatch(addProject(payload));
   };
 
@@ -122,7 +136,13 @@ const CreateProjectForm: FC<FormInterface> = ({ setIsVisible, className }) => {
               disabled={isRequesting}
               onClick={form.handleSubmit(onSubmit)}
             >
-              {isRequesting ? <DotLoader /> : "Create"}
+              {isRequesting ? (
+                <DotLoader />
+              ) : HaveValue(currentProject?._id) ? (
+                "Update"
+              ) : (
+                "Create"
+              )}
             </Button>
             <Button
               variant="outline"

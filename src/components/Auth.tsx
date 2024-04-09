@@ -16,7 +16,6 @@ import LocalStorageUtil from "@/service/localStorage";
 import { HaveValue, IsTrue } from "@/service/helper";
 import { fetchProjects } from "@/redux/Reducers/Project";
 import { AppDispatch } from "@/redux/Store";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
 
 // Interface
 interface AuthInterface {
@@ -79,7 +78,7 @@ const Auth = ({ children }: AuthInterface): React.ReactNode => {
             IsTrue(toggleSidebar, false)
               ? "absolute w-64 bg-white shadow-lg transform transition-transform translate-x-0 z-40"
               : "hidden"
-          } lg:block`}
+          } lg:block h-auto`}
           toggleSidebar={() => setToggleSidebar(false)}
         />
         <Button
@@ -92,9 +91,7 @@ const Auth = ({ children }: AuthInterface): React.ReactNode => {
             icon={IsTrue(toggleSidebar, false) ? faClose : faSliders}
           />
         </Button>
-        <ScrollArea className="w-full m-5">
-          <div>{children}</div>
-        </ScrollArea>
+        <div className="w-full m-5">{children}</div>
       </div>
     </>
   );
