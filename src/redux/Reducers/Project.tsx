@@ -158,12 +158,14 @@ const projectsSlice = createSlice({
       .addCase(updateProject?.pending, (state) => {
         state.isRequesting = true;
       })
-      .addCase(updateProject?.fulfilled, (state, action) => {
-        const index = state?.items?.findIndex((item) =>
-          IsEqual(item?.id, action?.payload?.id)
+      .addCase(updateProject?.fulfilled, (state, action: any) => {
+        state.isRequesting = false;
+        const index = state?.items?.findIndex((item: any) =>
+          IsEqual(item?._id, action?.payload?.project?._id)
         );
         if (!IsEqual(index, -1)) {
-          state.items[index] = action?.payload;
+          state.items.splice(index, 1, action?.payload?.project);
+          toast(action?.payload?.message || "Project updated successfully");
         }
       })
       .addCase(updateProject?.rejected, (state, action: any) => {

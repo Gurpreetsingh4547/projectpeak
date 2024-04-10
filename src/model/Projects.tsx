@@ -13,7 +13,7 @@ export const GetProjects = async () => {
  * @return {Promise<any>} Response data from the API.
  */
 export const CreateProjects = async (payload: any) => {
-  return await httpService.post("/add/project", payload);
+  return await httpService.post("/add/projects", payload);
 };
 
 /**
@@ -29,5 +29,5 @@ export const DeleteProject = async (id: number) => {
  * @return {Promise<any>} Response data from the API.
  */
 export const UpdateProjects = async (payload: any, id: number) => {
-  return await httpService.put(`/delete/projects/${id}`, payload);
+  return await httpService.put(`/update/projects/${id}`, payload);
 };
