@@ -78,7 +78,7 @@ const Auth = ({ children }: AuthInterface): React.ReactNode => {
             IsTrue(toggleSidebar, false)
               ? "absolute w-64 bg-white shadow-lg transform transition-transform translate-x-0 z-40"
               : "hidden"
-          } lg:block h-auto`}
+          } lg:block h-[100vh]`}
           toggleSidebar={() => setToggleSidebar(false)}
         />
         <Button
