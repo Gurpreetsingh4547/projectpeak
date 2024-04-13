@@ -13,12 +13,17 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
+// Services
+import { IsTrue } from "@/service/helper";
+
 // Interface
 interface SliderInterface {
   title?: string;
   content?: ReactNode | string | JSX.Element;
   isVisible?: boolean;
   setIsVisible?: (value: boolean) => void;
+  handlePrimaryAction?: () => void;
+  showFooter?: boolean;
 }
 
 /**
@@ -30,24 +35,30 @@ const Slider: FC<SliderInterface> = ({
   content,
   isVisible,
   setIsVisible,
+  handlePrimaryAction,
+  showFooter,
 }) => {
   return (
     <Sheet open={isVisible} onOpenChange={setIsVisible}>
       <SheetContent>
-        <SheetHeader>
+        <SheetHeader className="absolute top-2 left-4 right-0">
           <SheetTitle>{title}</SheetTitle>
         </SheetHeader>
 
-        {content}
-        <SheetFooter className="absolute bottom-0 left-0 right-0 bg-slate-100 px-6 py-3 flex justify-between">
-          <Button>Create</Button>
-          <Button
-            variant="outline"
-            onClick={() => setIsVisible && setIsVisible(false)}
-          >
-            Cancel
-          </Button>
-        </SheetFooter>
+        <div className="pt-6">{content}</div>
+
+        {/* Footer */}
+        {IsTrue(showFooter, false) && (
+          <SheetFooter className="absolute bottom-0 left-0 right-0 bg-slate-100 px-6 py-3 flex justify-between">
+            <Button onClick={handlePrimaryAction}>Create</Button>
+            <Button
+              variant="outline"
+              onClick={() => setIsVisible && setIsVisible(false)}
+            >
+              Cancel
+            </Button>
+          </SheetFooter>
+        )}
       </SheetContent>
     </Sheet>
   );
@@ -59,6 +70,8 @@ Slider.propTypes = {
   content: oneOfType([node, string]),
   isVisible: bool,
   setIsVisible: func,
+  handlePrimaryAction: func,
+  showFooter: bool,
 };
 
 // Component Default Propss
@@ -67,6 +80,8 @@ Slider.defaultProps = {
   content: "Content",
   isVisible: false,
   setIsVisible: () => {},
+  handlePrimaryAction: () => {},
+  showFooter: false,
 };
 
 export default Slider;

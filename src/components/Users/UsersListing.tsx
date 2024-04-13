@@ -4,6 +4,7 @@ import { FC, useState } from "react";
 import UserCard from "./UserCard";
 import { Button } from "../ui/button";
 import Slider from "../common/Modal/Slider";
+import UserForm from "./UserForm";
 
 /**
  * Renders the UsersListing component.
@@ -40,7 +41,17 @@ const UsersListing: FC = () => {
       </div>
 
       {/* Add User Slider */}
-      <Slider isVisible={isAddUserOpen} setIsVisible={setIsAddUserOpen} />
+      <Slider
+        title="Add User"
+        isVisible={isAddUserOpen}
+        setIsVisible={setIsAddUserOpen}
+        content={
+          <>
+            <UserForm setIsVisible={setIsAddUserOpen} />
+          </>
+        }
+        showFooter={false}
+      />
     </div>
   );
 };
