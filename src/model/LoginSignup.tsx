@@ -52,3 +52,12 @@ export const VerifyUserWithOtp = async (otp: object) => {
 export const ResendOtp = async () => {
   return await httpService.post("/resend/otp", {});
 };
+
+/**
+ * Sends a POST request to the "/forget/password" endpoint to reset the user's password.
+ * @param {any} payload - The payload containing the necessary data for resetting the password.
+ * @return {Promise<any>} A Promise that resolves with the response data from the server.
+ */
+export const ForgetPasswordUser = async (payload: any) => {
+  return await httpService.post("/forget/password", payload);
+};

@@ -8,6 +8,7 @@ import VerifyUser from "./VerifyUser/VerifyUser";
 import Dashboard from "./Dashboard/Dashboard";
 import ProjectLisiting from "./Projects/ProjectLisiting";
 import UsersListing from "./Users/UsersListing";
+import ForgetPassword from "./ForgetPassword/ForgetPassword";
 
 /**
  * The ProtectRouter component wraps the application's routes
@@ -29,6 +30,7 @@ export const ProtectRouter = () => {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify" element={<VerifyUser />} />
+        <Route path="/forgot-password" element={<ForgetPassword />} />
 
         <Route
           path="/projects"

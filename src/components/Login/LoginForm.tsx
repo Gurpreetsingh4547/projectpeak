@@ -27,7 +27,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import CheckboxWithLabel from "../common/Checkbox";
 import LOGO from "../../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { LoginUser } from "@/model/LoginSignup";
@@ -172,11 +171,10 @@ const LoginForm = () => {
                 />
               </form>
             </Form>
-            <div className="flex justify-between space-x-2 mt-5">
-              <CheckboxWithLabel label="Remember me" value={true} />
-              <a href="" className="text-sm">
-                Forget Password?
-              </a>
+            <div className="flex justify-end space-x-2 mt-5">
+              <Link to="/forgot-password" className="text-sm  text-blue-600">
+                Forgot Password?
+              </Link>
             </div>
           </CardContent>
           <CardFooter>
