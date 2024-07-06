@@ -30,8 +30,14 @@ interface Project {
  */
 export const fetchProjects = createAsyncThunk<Project[]>(
   "projects/fetchProjects",
-  async () => {
-    const { data = [] }: any = await GetProjects();
+  async (_, thunkAPI) => {
+    const state: any = thunkAPI?.getState();
+    const params = {
+      limit: state?.projects?.pagination?.limit,
+      page: state?.projects?.pagination?.page,
+    };
+
+    const { data = [] }: any = await GetProjects(params);
     return data;
   }
 );
@@ -105,6 +111,11 @@ interface ProjectsState {
   loading: boolean;
   error: any; // Adjust type as needed
   isRequesting: boolean;
+  pagination: {
+    limit: number;
+    page: number;
+    total_pages: number;
+  };
 }
 
 // Initial state
@@ -113,6 +124,11 @@ const initialState: ProjectsState = {
   loading: false,
   error: null,
   isRequesting: false,
+  pagination: {
+    limit: 10,
+    page: 1,
+    total_pages: 0,
+  },
 };
 
 // Reducers

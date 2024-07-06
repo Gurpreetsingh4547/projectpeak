@@ -1,11 +1,14 @@
 import httpService from "@/service/http";
 
+// Interfaces
+import { GetProjectInterface } from "@/Interfaces/ProjectsModal";
+
 /**
  * GetProjects function retrieves projects.
  * @return {Promise<any>} Response data from the API.
  */
-export const GetProjects = async () => {
-  return await httpService.get("/get/projects", {});
+export const GetProjects = async (params: GetProjectInterface) => {
+  return await httpService.get("/get/projects", params);
 };
 
 /**
