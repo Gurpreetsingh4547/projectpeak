@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/redux/Store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 // Components
 import {
@@ -114,7 +115,7 @@ const CreateProjectForm: FC<FormInterface> = ({
                 <div className="flex items-baseline justify-between">
                   <FormLabel>Description</FormLabel>
                   <Button title="Generate AI Description" className="w-5 h-8">
-                    <FontAwesomeIcon icon={faWandMagicSparkles} />
+                    <FontAwesomeIcon icon={faWandMagicSparkles as IconProp} />
                   </Button>
                 </div>
                 <FormControl>

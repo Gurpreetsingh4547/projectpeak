@@ -7,6 +7,7 @@ import {
   faTrashCan,
   faUserEdit,
 } from "@fortawesome/free-solid-svg-icons";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 // Packages
 import { Button } from "../ui/button";
@@ -35,13 +36,13 @@ const UserCard: FC = () => {
       </div>
       <div className="mt-4 flex justify-between">
         <Button className="rounded-full w-10 h-8" title="Edit">
-          <FontAwesomeIcon icon={faUserEdit} />
+          <FontAwesomeIcon icon={faUserEdit as IconProp} />
         </Button>
         <Button className="rounded-full w-10 h-8" title="View">
-          <FontAwesomeIcon icon={faEye} />
+          <FontAwesomeIcon icon={faEye as IconProp} />
         </Button>
         <Button className="rounded-full w-10 h-8" title="Delete">
-          <FontAwesomeIcon icon={faTrashCan} />
+          <FontAwesomeIcon icon={faTrashCan as IconProp} />
         </Button>
       </div>
     </div>

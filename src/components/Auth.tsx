@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { faClose, faSliders } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 // Comonents
 import NavigationBar from "./common/NavigationMenu";
@@ -88,7 +89,11 @@ const Auth = ({ children }: AuthInterface): React.ReactNode => {
           onClick={() => setToggleSidebar(!toggleSidebar)}
         >
           <FontAwesomeIcon
-            icon={IsTrue(toggleSidebar, false) ? faClose : faSliders}
+            icon={
+              IsTrue(toggleSidebar, false)
+                ? (faClose as IconProp)
+                : (faSliders as IconProp)
+            }
           />
         </Button>
         <div className="w-full m-5">{children}</div>

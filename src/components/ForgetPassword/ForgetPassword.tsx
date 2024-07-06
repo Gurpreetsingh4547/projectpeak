@@ -8,6 +8,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 // Components
 import {
@@ -60,7 +61,7 @@ const ForgetPassword = () => {
     try {
       const { message = "" }: any = await ForgetPasswordUser(payload);
 
-      toast("Welcome back", {
+      toast("Email sent successfully.", {
         description: message,
       });
     } catch ({ response = {} }: any) {
@@ -123,8 +124,11 @@ const ForgetPassword = () => {
             </Button>
             <Link to="/login" className="flex justify-center mt-5">
               <Button className="align-middle border-none" variant="outline">
-                <FontAwesomeIcon icon={faArrowLeft} className="mr-2" /> Back to
-                Login
+                <FontAwesomeIcon
+                  icon={faArrowLeft as IconProp}
+                  className="mr-2"
+                />{" "}
+                Back to Login
               </Button>
             </Link>
           </CardFooter>

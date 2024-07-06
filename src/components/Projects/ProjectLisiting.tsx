@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 // Components
 import {
@@ -125,7 +126,7 @@ const ProjectLisiting: React.FC = () => {
                               className="h-8 w-8 p-0 data-[state=open]:bg-muted"
                             >
                               <FontAwesomeIcon
-                                icon={faEllipsis}
+                                icon={faEllipsis as IconProp}
                                 className="h-4 w-4"
                               />
                               <span className="sr-only">Open menu</span>

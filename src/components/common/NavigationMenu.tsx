@@ -4,6 +4,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { faChevronDown, faUserGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 // Componenets
 import {
@@ -167,8 +168,8 @@ const NavigationBar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger className="h-8 p-2 rounded-md border-transparent border-0 bg-transparent">
               <span className="flex space-x-1">
-                <FontAwesomeIcon icon={faUserGear} />
-                <FontAwesomeIcon icon={faChevronDown} />
+                <FontAwesomeIcon icon={faUserGear as IconProp} />
+                <FontAwesomeIcon icon={faChevronDown as IconProp} />
               </span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

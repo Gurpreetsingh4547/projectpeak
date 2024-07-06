@@ -9,6 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLocation } from "react-router-dom";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 // Components
 import { Button } from "@/components/ui/button";
@@ -53,7 +54,7 @@ const Sidebar = ({ className, toggleSidebar }: SidebarProps) => {
             >
               <Link to="/">
                 <FontAwesomeIcon
-                  icon={faChartSimple}
+                  icon={faChartSimple as IconProp}
                   className="mr-2 h-4 w-4"
                 />
                 Overview of Projects
@@ -66,7 +67,7 @@ const Sidebar = ({ className, toggleSidebar }: SidebarProps) => {
             >
               <Link to="/projects">
                 <FontAwesomeIcon
-                  icon={faBarsProgress}
+                  icon={faBarsProgress as IconProp}
                   className="mr-2 h-4 w-4"
                 />
                 Browse Projects
@@ -80,7 +81,7 @@ const Sidebar = ({ className, toggleSidebar }: SidebarProps) => {
                   onClick={toggleSidebar}
                 >
                   <FontAwesomeIcon
-                    icon={faCirclePlus}
+                    icon={faCirclePlus as IconProp}
                     className="mr-2 h-4 w-4"
                   />
                   Create New Project
@@ -103,7 +104,10 @@ const Sidebar = ({ className, toggleSidebar }: SidebarProps) => {
               onClick={toggleSidebar}
             >
               <Link to="/users">
-                <FontAwesomeIcon icon={faUsers} className="mr-2 h-4 w-4" />
+                <FontAwesomeIcon
+                  icon={faUsers as IconProp}
+                  className="mr-2 h-4 w-4"
+                />
                 Users
               </Link>
             </Button>
