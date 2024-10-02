@@ -182,7 +182,9 @@ const NavigationBar = () => {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <Link to="/profile">
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+              </Link>
               <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

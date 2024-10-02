@@ -33,6 +33,7 @@ import { ArrayHaveValues, IsEqual, IsTrue } from "@/service/helper";
 // Redux services
 import { AppDispatch } from "@/redux/Store";
 import { deleteProject, fetchProjects } from "@/redux/Reducers/Project";
+import { Badge } from "../ui/badge";
 
 /**
  * React functional component for ProjectListing.
@@ -69,10 +70,12 @@ const ProjectLisiting: React.FC = () => {
    */
   const fetchMoreProjects = (refresh: boolean) => {
     if (IsTrue(refresh, false)) {
-      fetchProjects({
-        page: 1,
-        limit: pagination?.limit,
-      });
+      dispatch(
+        fetchProjects({
+          page: 1,
+          limit: pagination?.limit,
+        })
+      );
       return;
     }
 
@@ -130,8 +133,9 @@ const ProjectLisiting: React.FC = () => {
             <Table>
               <TableHeader className="bg-slate-100">
                 <TableRow>
-                  <TableHead className="w-[5rem]">SR. No.</TableHead>
+                  <TableHead className="w-[5rem]">#</TableHead>
                   <TableHead>Name</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -142,6 +146,11 @@ const ProjectLisiting: React.FC = () => {
                     <TableRow key={item?._id}>
                       <TableCell className="font-medium">{index + 1}</TableCell>
                       <TableCell>{item?.name}</TableCell>
+                      <TableCell>
+                        <Badge className="bg-yellow-500">
+                          {item?.status || "Pending"}
+                        </Badge>
+                      </TableCell>
                       <TableCell>{item?.description}</TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>

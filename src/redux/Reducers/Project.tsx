@@ -149,7 +149,9 @@ const projectsSlice = createSlice({
       .addCase(fetchProjects?.fulfilled, (state, action: any) => {
         const { data = [], pagination = {} } = action?.payload || {};
         state.loading = false;
-        state.items = state?.items?.concat(data);
+        state.items = IsEqual(pagination?.page, 1)
+          ? data
+          : state?.items?.concat(data);
         state.error = null;
         state.pagination = pagination;
       })
