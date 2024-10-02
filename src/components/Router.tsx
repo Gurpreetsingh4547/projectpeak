@@ -7,7 +7,7 @@ import Auth from "./Auth";
 import VerifyUser from "./VerifyUser/VerifyUser";
 import Dashboard from "./Dashboard/Dashboard";
 import ProjectLisiting from "./Projects/ProjectLisiting";
-import UsersListing from "./Users/UsersListing";
+import UserProfile from "./Users/UserProfile";
 import ForgetPassword from "./ForgetPassword/ForgetPassword";
 import ChangePassword from "./ForgetPassword/ChangePassword";
 
@@ -44,10 +44,10 @@ export const ProtectRouter = () => {
         />
 
         <Route
-          path="/users"
+          path="/profile"
           element={
             <Auth>
-              <UsersListing />
+              <UserProfile />
             </Auth>
           }
         />

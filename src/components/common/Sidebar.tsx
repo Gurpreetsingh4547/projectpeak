@@ -5,7 +5,7 @@ import {
   faBarsProgress,
   faChartSimple,
   faCirclePlus,
-  faUsers,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLocation } from "react-router-dom";
@@ -99,16 +99,16 @@ const Sidebar = ({ className, toggleSidebar }: SidebarProps) => {
               description="Effortlessly create projects with automated, AI-generated descriptions tailored to your project's title."
             />
             <Button
-              variant={!isActive("/users") ? "ghost" : "secondary"}
+              variant={!isActive("/profile") ? "ghost" : "secondary"}
               className="w-full justify-start"
               onClick={toggleSidebar}
             >
-              <Link to="/users">
+              <Link to="/profile">
                 <FontAwesomeIcon
-                  icon={faUsers as IconProp}
+                  icon={faUser as IconProp}
                   className="mr-2 h-4 w-4"
                 />
-                Users
+                User Profile
               </Link>
             </Button>
           </div>

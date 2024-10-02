@@ -25,19 +25,24 @@ interface Project {
   callback: () => void;
 }
 
+interface FetchProjectsPayload {
+  page?: number;
+  limit?: number;
+}
+
 /**
  * Fetch projects from API
  */
-export const fetchProjects = createAsyncThunk<Project[]>(
+export const fetchProjects = createAsyncThunk<Project[], FetchProjectsPayload>(
   "projects/fetchProjects",
-  async (_, thunkAPI) => {
+  async (payload, thunkAPI) => {
     const state: any = thunkAPI?.getState();
     const params = {
-      limit: state?.projects?.pagination?.limit,
-      page: state?.projects?.pagination?.page,
+      limit: payload?.limit || state?.projects?.pagination?.limit,
+      page: payload?.page || state?.projects?.pagination?.page,
     };
 
-    const { data = [] }: any = await GetProjects(params);
+    const data: any = await GetProjects(params);
     return data;
   }
 );
@@ -141,10 +146,12 @@ const projectsSlice = createSlice({
       .addCase(fetchProjects?.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchProjects?.fulfilled, (state, action) => {
+      .addCase(fetchProjects?.fulfilled, (state, action: any) => {
+        const { data = [], pagination = {} } = action?.payload || {};
         state.loading = false;
-        state.items = action?.payload;
+        state.items = state?.items?.concat(data);
         state.error = null;
+        state.pagination = pagination;
       })
       .addCase(fetchProjects?.rejected, (state, action) => {
         state.loading = false;

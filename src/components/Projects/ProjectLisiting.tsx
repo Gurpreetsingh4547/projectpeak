@@ -28,11 +28,11 @@ import {
 import CreateProjectForm from "./CreateProjectForm";
 
 // Services
-import { ArrayHaveValues, IsTrue } from "@/service/helper";
+import { ArrayHaveValues, IsEqual, IsTrue } from "@/service/helper";
 
 // Redux services
 import { AppDispatch } from "@/redux/Store";
-import { deleteProject } from "@/redux/Reducers/Project";
+import { deleteProject, fetchProjects } from "@/redux/Reducers/Project";
 
 /**
  * React functional component for ProjectListing.
@@ -40,7 +40,7 @@ import { deleteProject } from "@/redux/Reducers/Project";
  */
 const ProjectLisiting: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { items, loading, isRequesting } = useSelector(
+  const { items, loading, isRequesting, pagination } = useSelector(
     (state: any) => state.projects
   );
   const [isDeleteProjectOpen, setIsDeleteProjectOpen] = useState(false);
@@ -61,6 +61,31 @@ const ProjectLisiting: React.FC = () => {
     dispatch(deleteProject(payload));
   };
 
+  /**
+   * Fetches more projects from the API when the user reaches the end of the
+   * listing. If the `refresh` parameter is true, it will fetch the first page
+   * again, otherwise it will fetch the next page from the current one.
+   * @param {boolean} refresh If true, it will refresh the projects list
+   */
+  const fetchMoreProjects = (refresh: boolean) => {
+    if (IsTrue(refresh, false)) {
+      fetchProjects({
+        page: 1,
+        limit: pagination?.limit,
+      });
+      return;
+    }
+
+    if (IsEqual(pagination?.page, pagination?.total_pages)) return;
+
+    const payload = {
+      page: pagination?.page + 1,
+      limit: pagination?.limit,
+    };
+
+    dispatch(fetchProjects(payload));
+  };
+
   return (
     <div className="h-full flex-1 flex-col space-y-8 md:flex">
       <div className="flex items-center justify-between space-y-2">
@@ -75,21 +100,21 @@ const ProjectLisiting: React.FC = () => {
         </div>
       </div>
       {/* Content Loader */}
-      {IsTrue(loading, false) && <TableLoader />}
+      {IsTrue(loading, false) && !ArrayHaveValues(items) && <TableLoader />}
 
-      {!IsTrue(loading, false) && (
+      {ArrayHaveValues(items) && (
         <InfiniteScroll
-          dataLength={items.length} //This is important field to render the next data
-          next={() => alert("next")}
-          hasMore={true}
-          loader={<h4>Loading...</h4>}
+          dataLength={items?.length} //This is important field to render the next data
+          next={() => fetchMoreProjects(false)}
+          hasMore={!IsEqual(pagination?.page, pagination?.total_pages)}
+          loader={<TableLoader />}
           endMessage={
-            <p style={{ textAlign: "center" }}>
+            <p style={{ textAlign: "center", paddingTop: "10px" }}>
               <b>Yay! You have seen it all</b>
             </p>
           }
           // below props only if you need pull down functionality
-          refreshFunction={() => alert("refreshFunction")}
+          refreshFunction={() => fetchMoreProjects(true)}
           pullDownToRefresh
           pullDownToRefreshThreshold={50}
           pullDownToRefreshContent={

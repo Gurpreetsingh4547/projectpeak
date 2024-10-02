@@ -14,7 +14,6 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import {
   DropdownMenu,
@@ -99,39 +98,31 @@ const NavigationBar = () => {
                             className="w-14 object-cover"
                           />
                           <div className="mb-2 mt-4 text-xs font-medium">
-                            AI-Integrated Project Management Platform
+                            Project Management Platform
                           </div>
                           <p className="text-sm leading-tight text-muted-foreground">
-                            Revolutionize project management with our
-                            AI-integrated platform that streamlines processes,
-                            enhances decision-making, and optimizes project
-                            outcomes.
+                            Revolutionize project management with our platform
+                            that streamlines processes, enhances
+                            decision-making, and optimizes project outcomes.
                           </p>
                         </span>
                       </NavigationMenuLink>
                     </li>
-                    <ListItem href="/docs" title="Intelligent Task Assignment:">
-                      AI-PMP analyzes project requirements, team member skills,
-                      and workload distribution to intelligently assign tasks.
-                      By considering factors such as expertise, availability,
-                      and priority, it ensures efficient task allocation.
+                    <ListItem title="Intelligent Task Assignment:">
+                      Analyzes project requirements, By considering factors such
+                      as expertise, availability, and priority, it ensures
+                      efficient task allocation.
                     </ListItem>
-                    <ListItem
-                      href="/docs"
-                      title="Predictive Resource Management"
-                    >
+                    <ListItem title="Predictive Resource Management">
                       Through machine learning algorithms, AI-PMP forecasts
                       resource needs based on project timelines, historical
                       data, and current workload. This enables proactive
                       resource allocation, preventing bottlenecks and optimizing
                       productivity.
                     </ListItem>
-                    <ListItem
-                      href="/docs"
-                      title="Real-time Performance Analytics"
-                    >
-                      AI-PMP offers comprehensive analytics dashboards that
-                      provide real-time insights into project performance, team
+                    <ListItem title="Real-time Performance Analytics">
+                      Offers comprehensive analytics dashboards that provide
+                      real-time insights into project performance, team
                       productivity, and resource utilization. These insights
                       enable stakeholders to make data-driven decisions and
                       adapt strategies for project success.
@@ -140,7 +131,7 @@ const NavigationBar = () => {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+                <NavigationMenuTrigger>Recent Projects</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                     {components.map((component) => (
@@ -154,13 +145,6 @@ const NavigationBar = () => {
                     ))}
                   </ul>
                 </NavigationMenuContent>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink
-                  className={`${navigationMenuTriggerStyle()} cursor-pointer`}
-                >
-                  Documentation
-                </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -176,9 +160,7 @@ const NavigationBar = () => {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Help</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
