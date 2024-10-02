@@ -47,7 +47,7 @@ const Auth = ({ children }: AuthInterface): React.ReactNode => {
   }
 
   useEffect(() => {
-    dispatch(fetchProjects());
+    dispatch(fetchProjects({}));
   }, [dispatch]);
 
   /**

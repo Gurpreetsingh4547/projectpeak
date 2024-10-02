@@ -20,7 +20,11 @@ interface CardProps {
  * @param {string} title - The title of the card.
  * @return {JSX.Element} The rendered CardComponent.
  */
-const CardComponent: React.FC<CardProps> = ({ title, taskDone, totalTask }) => {
+const CardComponent: React.FC<CardProps> = ({
+  title = "Total Task Done",
+  taskDone = 0,
+  totalTask = 0,
+}) => {
   /**
    * Calculates the percentage of a partial value relative to a total value.
    * @param {number} partialValue - The partial value to calculate the percentage of.
@@ -57,15 +61,6 @@ CardComponent.propTypes = {
   title: string,
   taskDone: number,
   totalTask: number,
-};
-
-/**
- * Component default Props
- */
-CardComponent.defaultProps = {
-  title: "Total Task Done",
-  taskDone: 0,
-  totalTask: 0,
 };
 
 export default CardComponent;

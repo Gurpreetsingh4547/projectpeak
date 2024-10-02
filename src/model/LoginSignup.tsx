@@ -70,3 +70,11 @@ export const ForgetPasswordUser = async (payload: any) => {
 export const ChangeUserPassword = async (payload: any) => {
   return await httpService.post("/reset/password", payload);
 };
+
+/**
+ * Logs out the user by making a DELETE request to the "/logout" endpoint.
+ * @returns Promise
+ */
+export const LogoutUser = async () => {
+  return await httpService.delete("/logout");
+};

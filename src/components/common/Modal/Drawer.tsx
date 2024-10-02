@@ -52,17 +52,17 @@ interface DrawerInterface {
  * @return {ReactElement} The rendered Drawer component.
  */
 const DrawerComponent: FC<DrawerInterface> = ({
-  triggerContent,
-  title,
-  description,
-  content,
-  primaryButton,
-  secondaryButton,
-  isVisible,
-  setIsVisible,
-  showFooter,
-  handlePrimaryAction,
-  isRequesting,
+  triggerContent = "open",
+  title = "Title",
+  description = "Description",
+  content = "Content",
+  primaryButton = "Primary Button",
+  secondaryButton = "Secondary Button",
+  isVisible = false,
+  setIsVisible = () => {},
+  showFooter = false,
+  handlePrimaryAction = () => {},
+  isRequesting = false,
 }) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -134,21 +134,6 @@ DrawerComponent.propTypes = {
   showFooter: bool,
   handlePrimaryAction: func,
   isRequesting: bool,
-};
-
-// Component Default Propss
-DrawerComponent.defaultProps = {
-  triggerContent: "Open",
-  title: "Title",
-  description: "Description",
-  content: "Content",
-  primaryButton: "Primary Button",
-  secondaryButton: "Secondary Button",
-  isVisible: false,
-  setIsVisible: () => {},
-  showFooter: true,
-  handlePrimaryAction: () => {},
-  isRequesting: false,
 };
 
 export default DrawerComponent;

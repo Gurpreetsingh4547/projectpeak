@@ -1,7 +1,7 @@
 import React from "react";
 
 // Packages
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { faChevronDown, faUserGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
@@ -29,6 +29,8 @@ import { cn } from "@/lib/utils";
 
 // Assests
 import LOGO from "@/assets/logo.png";
+import { toast } from "sonner";
+import { LogoutUser } from "@/model/LoginSignup";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -73,6 +75,27 @@ const components: { title: string; href: string; description: string }[] = [
  * @return {JSX.Element} The rendered navigation bar.
  */
 const NavigationBar = () => {
+  const navigate = useNavigate();
+
+  /**
+   * Logs out the user and redirects them to the login page.
+   * @return {Promise<void>}
+   */
+  const logout = async () => {
+    try {
+      await LogoutUser();
+      toast("Logout Successful");
+
+      // Set Login user verified
+      localStorage.clear();
+      navigate("/login");
+    } catch ({ response = {} }: any) {
+      toast("Something went wrong.", {
+        description: response?.data?.message,
+      });
+    }
+  };
+
   return (
     <div className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center">
@@ -160,7 +183,7 @@ const NavigationBar = () => {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
