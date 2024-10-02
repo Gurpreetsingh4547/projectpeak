@@ -61,3 +61,12 @@ export const ResendOtp = async () => {
 export const ForgetPasswordUser = async (payload: any) => {
   return await httpService.post("/forget/password", payload);
 };
+
+/**
+ * Change password for user with token
+ * @param payload Object
+ * @returns Promise
+ */
+export const ChangeUserPassword = async (payload: any) => {
+  return await httpService.post("/reset/password", payload);
+};
