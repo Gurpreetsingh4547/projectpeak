@@ -3,7 +3,7 @@ import React, { useState } from "react";
 // Packages
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsis, faFileAlt } from "@fortawesome/free-solid-svg-icons";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
@@ -28,12 +28,17 @@ import {
 import CreateProjectForm from "./CreateProjectForm";
 
 // Services
-import { ArrayHaveValues, IsEqual, IsTrue } from "@/service/helper";
+import { ArrayHaveValues, HaveValue, IsEqual, IsTrue } from "@/service/helper";
 
 // Redux services
 import { AppDispatch } from "@/redux/Store";
-import { deleteProject, fetchProjects } from "@/redux/Reducers/Project";
+import {
+  deleteProject,
+  fetchProjects,
+  updateProject,
+} from "@/redux/Reducers/Project";
 import { Badge } from "../ui/badge";
+import CheckboxWithLabel from "../common/Checkbox";
 
 /**
  * React functional component for ProjectListing.
@@ -48,6 +53,27 @@ const ProjectLisiting: React.FC = () => {
   const [idToDeleteProject, setIdToDeleteProject] = useState(0);
   const [isUpdateProjectOpen, setIsUpdateProjectOpen] = useState(false);
   const [currentProject, setCurrentProject] = useState<any>({});
+  const projectStatus = ["Pending", "In Progress", "Block", "Complete"];
+  const [selectedProjectStatus, setSelectedProjectStatus] = useState("");
+  const statusBagesColors: any = {
+    Pending: "yellow",
+    Block: "red",
+    Complete: "green",
+    progress: "blue",
+  };
+
+  /**
+   * Update project status
+   */
+  const updateProjectStatus = () => {
+    const payload = {
+      ...currentProject,
+      status: selectedProjectStatus,
+      id: currentProject?._id,
+      callback: () => setSelectedProjectStatus(""),
+    };
+    dispatch(updateProject(payload));
+  };
 
   /**
    * Deletes a project from the listing.
@@ -105,6 +131,22 @@ const ProjectLisiting: React.FC = () => {
       {/* Content Loader */}
       {IsTrue(loading, false) && !ArrayHaveValues(items) && <TableLoader />}
 
+      {!IsTrue(loading, false) && !ArrayHaveValues(items) && (
+        <div className="flex flex-col items-center justify-center h-full">
+          <FontAwesomeIcon
+            icon={faFileAlt as IconProp}
+            size="4x"
+            className="text-gray-400 mb-4"
+          />
+          <h2 className="text-xl font-semibold text-gray-700">
+            No Records Found
+          </h2>
+          <p className="text-gray-500 mb-6">
+            We couldn’t find any projects created by you.
+          </p>
+        </div>
+      )}
+
       {ArrayHaveValues(items) && (
         <InfiniteScroll
           dataLength={items?.length} //This is important field to render the next data
@@ -147,7 +189,14 @@ const ProjectLisiting: React.FC = () => {
                       <TableCell className="font-medium">{index + 1}</TableCell>
                       <TableCell>{item?.name}</TableCell>
                       <TableCell>
-                        <Badge className="bg-yellow-500">
+                        <Badge
+                          className={`
+                            bg-${
+                              statusBagesColors[item?.status] || "blue"
+                            }-500 hover:bg-${
+                            statusBagesColors[item?.status] || "blue"
+                          }-400`}
+                        >
                           {item?.status || "Pending"}
                         </Badge>
                       </TableCell>
@@ -179,8 +228,14 @@ const ProjectLisiting: React.FC = () => {
                             >
                               Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="cursor-pointer">
-                              Make a copy
+                            <DropdownMenuItem
+                              className="cursor-pointer"
+                              onClick={() => {
+                                setSelectedProjectStatus(item?.status);
+                                setCurrentProject(item);
+                              }}
+                            >
+                              Update status
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => {
@@ -213,6 +268,31 @@ const ProjectLisiting: React.FC = () => {
         isRequesting={isRequesting}
         handlePrimaryAction={deleteProjectFromListing}
         description="You are about to delete this Project. Click confirm to proceed."
+      />
+
+      <DrawerComponent
+        triggerContent={<></>}
+        isVisible={HaveValue(selectedProjectStatus)}
+        setIsVisible={() => setSelectedProjectStatus("")}
+        primaryButton="Update"
+        secondaryButton="Cancel"
+        title="Update Project Status"
+        isRequesting={isRequesting}
+        handlePrimaryAction={updateProjectStatus}
+        description="Select the status for this project. Click confirm to proceed."
+        content={
+          <div className="flex flex-wrap justify-between p-5 gap-4">
+            {ArrayHaveValues(projectStatus) &&
+              projectStatus.map((item: string) => (
+                <CheckboxWithLabel
+                  label={item}
+                  key={item}
+                  value={IsEqual(selectedProjectStatus, item)}
+                  onChange={() => setSelectedProjectStatus(item)}
+                />
+              ))}
+          </div>
+        }
       />
 
       {IsTrue(isUpdateProjectOpen, false) && (

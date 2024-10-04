@@ -76,13 +76,14 @@ export const updateProject = createAsyncThunk<
   {
     name: string;
     description: string;
+    status: string;
     callback: () => void;
     id: number;
   }
 >("projects/updateProject", async (itemData, thunkApi) => {
-  const { name, description, id, callback } = itemData;
+  const { name, description, status, id, callback } = itemData;
   try {
-    const data: any = await UpdateProjects({ name, description }, id);
+    const data: any = await UpdateProjects({ name, description, status }, id);
     callback();
     return data;
   } catch (error: any) {

@@ -60,7 +60,7 @@ const DrawerComponent: FC<DrawerInterface> = ({
   secondaryButton = "Secondary Button",
   isVisible = false,
   setIsVisible = () => {},
-  showFooter = false,
+  showFooter = true,
   handlePrimaryAction = () => {},
   isRequesting = false,
 }) => {

@@ -77,6 +77,7 @@ const CreateProjectForm: FC<FormInterface> = ({
 
     if (HaveValue(currentProject?._id)) {
       payload.id = currentProject?._id;
+      payload.status = currentProject?.status;
       // Dispatch add project action
       dispatch(updateProject(payload));
       return;

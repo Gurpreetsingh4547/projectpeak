@@ -12,10 +12,10 @@ interface MyComponentProps {
 }
 
 const CheckboxWithLabel: React.FC<MyComponentProps> = ({
-  value,
-  onChange,
-  disabled,
-  label,
+  value = true,
+  onChange = () => {},
+  disabled = false,
+  label = "Accept terms and conditions",
   ...props
 }) => {
   return (
@@ -24,7 +24,7 @@ const CheckboxWithLabel: React.FC<MyComponentProps> = ({
         id="terms2"
         disabled={disabled}
         checked={value}
-        onChange={onChange}
+        onCheckedChange={onChange}
         {...props}
       />
       <label
@@ -47,14 +47,4 @@ CheckboxWithLabel.propTypes = {
   onChange: func,
   disabled: bool,
   label: string,
-};
-
-/**
- * Component Default Props
- */
-CheckboxWithLabel.defaultProps = {
-  value: true,
-  onChange: () => {},
-  disabled: false,
-  label: "Accept terms and conditions",
 };
