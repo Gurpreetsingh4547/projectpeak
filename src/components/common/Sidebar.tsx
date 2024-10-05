@@ -47,37 +47,37 @@ const Sidebar = ({ className, toggleSidebar }: SidebarProps) => {
             Dashboard
           </h2>
           <div className="space-y-1">
-            <Button
-              variant={!isActive("/") ? "ghost" : "secondary"}
-              className="w-full justify-start"
-              onClick={toggleSidebar}
-            >
-              <Link to="/">
+            <Link to="/">
+              <Button
+                variant={!isActive("/") ? "ghost" : "secondary"}
+                className="w-full justify-start my-1"
+                onClick={toggleSidebar}
+              >
                 <FontAwesomeIcon
                   icon={faChartSimple as IconProp}
                   className="mr-2 h-4 w-4"
                 />
                 Overview of Projects
-              </Link>
-            </Button>
-            <Button
-              variant={!isActive("/projects") ? "ghost" : "secondary"}
-              className="w-full justify-start"
-              onClick={toggleSidebar}
-            >
-              <Link to="/projects">
+              </Button>
+            </Link>
+            <Link to="/projects">
+              <Button
+                variant={!isActive("/projects") ? "ghost" : "secondary"}
+                className="w-full justify-start my-1"
+                onClick={toggleSidebar}
+              >
                 <FontAwesomeIcon
                   icon={faBarsProgress as IconProp}
                   className="mr-2 h-4 w-4"
                 />
                 Browse Projects
-              </Link>
-            </Button>
+              </Button>
+            </Link>
             <DrawerComponent
               triggerContent={
                 <Button
                   variant="ghost"
-                  className="w-full justify-start"
+                  className="w-full justify-start my-1"
                   onClick={toggleSidebar}
                 >
                   <FontAwesomeIcon
@@ -98,19 +98,19 @@ const Sidebar = ({ className, toggleSidebar }: SidebarProps) => {
               showFooter={false}
               description="Effortlessly create projects with automated, AI-generated descriptions tailored to your project's title."
             />
-            <Button
-              variant={!isActive("/profile") ? "ghost" : "secondary"}
-              className="w-full justify-start"
-              onClick={toggleSidebar}
-            >
-              <Link to="/profile">
+            <Link to="/profile">
+              <Button
+                variant={!isActive("/profile") ? "ghost" : "secondary"}
+                className="w-full justify-start my-1"
+                onClick={toggleSidebar}
+              >
                 <FontAwesomeIcon
                   icon={faUser as IconProp}
                   className="mr-2 h-4 w-4"
                 />
                 User Profile
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
