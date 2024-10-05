@@ -42,3 +42,11 @@ export const UpdateProjects = async (payload: any, id: number) => {
 export const GetProjectStatus = async () => {
   return await httpService.get("/project/status");
 };
+
+/**
+ * Get Recent changes Project List
+ * @returns Promise
+ */
+export const GetRecentProjectList = async () => {
+  return await httpService.get("/recent/projects");
+};

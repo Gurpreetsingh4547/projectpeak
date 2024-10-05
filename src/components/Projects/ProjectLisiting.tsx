@@ -123,8 +123,7 @@ const ProjectLisiting: React.FC = () => {
             Ongoing Projects!
           </h2>
           <p className="text-muted-foreground">
-            Comprehensive overview of ongoing projects managed by our
-            professional team.
+            List of projects created by you.
           </p>
         </div>
       </div>

@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // Packages
 import { Link, useNavigate } from "react-router-dom";
-import { faChevronDown, faUserGear } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronDown,
+  faFolderOpen,
+  faUserGear,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
@@ -31,44 +35,12 @@ import { cn } from "@/lib/utils";
 import LOGO from "@/assets/logo.png";
 import { toast } from "sonner";
 import { LogoutUser } from "@/model/LoginSignup";
+import { GetRecentProjectList } from "@/model/Projects";
+import { ArrayHaveValues, IsTrue } from "@/service/helper";
+import ListLoader from "./ContentLoader/ListLoader";
 
-const components: { title: string; href: string; description: string }[] = [
-  {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
-    description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
-  },
-  {
-    title: "Hover Card",
-    href: "/docs/primitives/hover-card",
-    description:
-      "For sighted users to preview content available behind a link.",
-  },
-  {
-    title: "Progress",
-    href: "/docs/primitives/progress",
-    description:
-      "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
-  },
-  {
-    title: "Scroll-area",
-    href: "/docs/primitives/scroll-area",
-    description: "Visually or semantically separates content.",
-  },
-  {
-    title: "Tabs",
-    href: "/docs/primitives/tabs",
-    description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-  },
-  {
-    title: "Tooltip",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-  },
-];
+// CSS
+import "./Css/Navigation.css";
 
 /**
  * Renders a navigation bar with a menu that displays a list of links.
@@ -76,6 +48,26 @@ const components: { title: string; href: string; description: string }[] = [
  */
 const NavigationBar = () => {
   const navigate = useNavigate();
+  const [recentChangedProjects, setRecentlyChangedProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  /**
+   * Fetches the list of recently changed projects.
+   * @return {Promise<void>}
+   */
+  const GetRecentProjects = async () => {
+    setLoading(true);
+    try {
+      const { data = {} }: any = await GetRecentProjectList();
+      setRecentlyChangedProjects(data);
+    } catch ({ response = {} }: any) {
+      toast("Something went wrong.", {
+        description: response?.data?.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   /**
    * Logs out the user and redirects them to the login page.
@@ -95,6 +87,10 @@ const NavigationBar = () => {
       });
     }
   };
+
+  useEffect(() => {
+    GetRecentProjects();
+  }, []);
 
   return (
     <div className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -156,17 +152,54 @@ const NavigationBar = () => {
               <NavigationMenuItem>
                 <NavigationMenuTrigger>Recent Projects</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                    {components.map((component) => (
-                      <ListItem
-                        key={component.title}
-                        title={component.title}
-                        href={component.href}
-                      >
-                        {component.description}
-                      </ListItem>
-                    ))}
-                  </ul>
+                  {(ArrayHaveValues(recentChangedProjects) ||
+                    IsTrue(loading, false)) && (
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                      {IsTrue(loading, false) && (
+                        <>
+                          <ListLoader />
+                          <ListLoader />
+                          <ListLoader />
+                          <ListLoader />
+                        </>
+                      )}
+                      {!IsTrue(loading, false) &&
+                        ArrayHaveValues(recentChangedProjects) &&
+                        recentChangedProjects.map((item: any) => (
+                          <ListItem key={item?._id} title={item?.name}>
+                            <span
+                              className="italic"
+                              dangerouslySetInnerHTML={{
+                                __html:
+                                  item?.recent_changes ||
+                                  `Create a new project <b>${item?.name}</b>`,
+                              }}
+                            ></span>
+                          </ListItem>
+                        ))}
+                    </ul>
+                  )}
+
+                  {!ArrayHaveValues(recentChangedProjects) &&
+                    !IsTrue(loading, false) && (
+                      <div className="flex flex-col items-center justify-center h-full p-4">
+                        {/* FontAwesome Icon */}
+                        <div className="text-gray-400">
+                          <FontAwesomeIcon
+                            icon={faFolderOpen as IconProp}
+                            className="text-sm"
+                          />
+                        </div>
+
+                        {/* Message */}
+                        <h2 className="text-lg font-semibold text-gray-600 mt-2">
+                          No Recent Projects Found
+                        </h2>
+                        <p className="text-gray-500 text-sm">
+                          It seems you have no recent projects.
+                        </p>
+                      </div>
+                    )}
                 </NavigationMenuContent>
               </NavigationMenuItem>
             </NavigationMenuList>
@@ -197,7 +230,7 @@ const NavigationBar = () => {
 export default NavigationBar;
 
 // List Item Component
-const ListItem = React.forwardRef<
+const ListItem: any = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">
 >(({ className, title, children, ...props }, ref) => {
