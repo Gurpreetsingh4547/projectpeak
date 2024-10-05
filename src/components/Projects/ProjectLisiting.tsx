@@ -56,10 +56,10 @@ const ProjectLisiting: React.FC = () => {
   const projectStatus = ["Pending", "In Progress", "Block", "Complete"];
   const [selectedProjectStatus, setSelectedProjectStatus] = useState("");
   const statusBagesColors: any = {
-    Pending: "yellow",
-    Block: "red",
-    Complete: "green",
-    progress: "blue",
+    Pending: "bg-yellow-500",
+    Block: "bg-red-500",
+    Complete: "bg-green-500",
+    undefined: "bg-blue-500",
   };
 
   /**
@@ -190,12 +190,11 @@ const ProjectLisiting: React.FC = () => {
                       <TableCell>{item?.name}</TableCell>
                       <TableCell>
                         <Badge
-                          className={`
-                            bg-${
-                              statusBagesColors[item?.status] || "blue"
-                            }-500 hover:bg-${
-                            statusBagesColors[item?.status] || "blue"
-                          }-400`}
+                          className={`${
+                            statusBagesColors[item?.status] || "bg-blue-500"
+                          } hover:${
+                            statusBagesColors[item?.status] || "bg-blue-500"
+                          }`}
                         >
                           {item?.status || "Pending"}
                         </Badge>
