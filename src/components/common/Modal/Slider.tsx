@@ -31,12 +31,12 @@ interface SliderInterface {
  * @return {JSX.Element} The rendered Slider component
  */
 const Slider: FC<SliderInterface> = ({
-  title,
-  content,
-  isVisible,
-  setIsVisible,
-  handlePrimaryAction,
-  showFooter,
+  title = "Title",
+  content = "Content",
+  isVisible = false,
+  setIsVisible = () => {},
+  handlePrimaryAction = () => {},
+  showFooter = false,
 }) => {
   return (
     <Sheet open={isVisible} onOpenChange={setIsVisible}>
@@ -72,16 +72,6 @@ Slider.propTypes = {
   setIsVisible: func,
   handlePrimaryAction: func,
   showFooter: bool,
-};
-
-// Component Default Propss
-Slider.defaultProps = {
-  title: "Title",
-  content: "Content",
-  isVisible: false,
-  setIsVisible: () => {},
-  handlePrimaryAction: () => {},
-  showFooter: false,
 };
 
 export default Slider;
