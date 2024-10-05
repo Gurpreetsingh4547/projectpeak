@@ -34,3 +34,11 @@ export const DeleteProject = async (id: number) => {
 export const UpdateProjects = async (payload: any, id: number) => {
   return await httpService.put(`/update/projects/${id}`, payload);
 };
+
+/**
+ * Get Project Status
+ * @returns Promise
+ */
+export const GetProjectStatus = async () => {
+  return await httpService.get("/project/status");
+};
